@@ -53,7 +53,7 @@
     "@aws-cdk/core" "1.70.0"
     constructs "^3.0.4"
 
-"@aws-cdk/aws-cloudfront@1.70.0":
+"@aws-cdk/aws-cloudfront@1.70.0", "@aws-cdk/aws-cloudfront@^1.70.0":
   version "1.70.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-cloudfront/-/aws-cloudfront-1.70.0.tgz#e21a973f51f09c3196331f4af877a52a4ca0fb9f"
   integrity sha512-2QNS0zed4b9nlSblbO4zeAaGe5AbLCqhSjrb9uXxmiU87Hzc87WT5qf/qkhlFg3Gym/IUsM4ZcdkVeKz3i3iOA==
