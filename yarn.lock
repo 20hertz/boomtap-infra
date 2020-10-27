@@ -42,7 +42,7 @@
     "@aws-cdk/core" "1.70.0"
     constructs "^3.0.4"
 
-"@aws-cdk/aws-certificatemanager@1.70.0":
+"@aws-cdk/aws-certificatemanager@1.70.0", "@aws-cdk/aws-certificatemanager@^1.70.0":
   version "1.70.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-certificatemanager/-/aws-certificatemanager-1.70.0.tgz#12d40801e77b282d6ea1747837ce229433f6389f"
   integrity sha512-ySQKkVqXIo81DW5QBGSHxEjUPsUv+/vaUmGqxADgoD63iD3Jg5QzoTnk+KbYa869CNbjJWIIUpkrlsXiYtKg1g==
@@ -172,7 +172,7 @@
     "@aws-cdk/core" "1.70.0"
     constructs "^3.0.4"
 
-"@aws-cdk/aws-route53@1.70.0":
+"@aws-cdk/aws-route53@1.70.0", "@aws-cdk/aws-route53@^1.70.0":
   version "1.70.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-route53/-/aws-route53-1.70.0.tgz#5d5b0c55b3e31b8d07f62e618d2475f82e3e20d2"
   integrity sha512-L4ku9T1jcgWbPTL/huedTnKMOkotCH9YAWEzQlVEsMLBRz+X786yAxpBhNIk35T3ZasOkv8W//nxes+yk//0jw==
