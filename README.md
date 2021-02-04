@@ -1,4 +1,4 @@
-# Playground IaC
+# Boomtap IaC
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 ## Useful commands

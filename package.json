@@ -1,8 +1,8 @@
 {
-  "name": "playground-infra",
+  "name": "boomtap-infra",
   "version": "0.1.0",
   "bin": {
-    "playground-infra": "bin/playground-infra.js"
+    "boomtap-infra": "bin/boomtap-infra.js"
   },
   "scripts": {
     "build": "tsc",
