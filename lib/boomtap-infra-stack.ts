@@ -5,17 +5,17 @@ import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as path from "path";
 import { CfnOutput } from "@aws-cdk/core";
 
-const domainName = "boomtap.io";
-
 interface FrontEndProps {
   certificateArn: string;
+  domainName: string;
+  env: string;
 }
 
 export class FrontEndStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: FrontEndProps) {
+  constructor(scope: cdk.Construct, id: string, props: FrontEndProps) {
     super(scope, id);
 
-    const assetBucket = new s3.Bucket(this, "stephane-static-website", {
+    const assetBucket = new s3.Bucket(this, `bt-static-website-${props.env}`, {
       publicReadAccess: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       websiteIndexDocument: "index.html",
@@ -26,9 +26,9 @@ export class FrontEndStack extends cdk.Stack {
       "SiteDistribution",
       {
         viewerCertificate: {
-          aliases: [domainName],
+          aliases: [props.domainName],
           props: {
-            acmCertificateArn: props?.certificateArn,
+            acmCertificateArn: props.certificateArn,
             sslSupportMethod: "sni-only",
           },
         },
@@ -50,7 +50,7 @@ export class FrontEndStack extends cdk.Stack {
     new s3Deployment.BucketDeployment(this, "DeployWebsite", {
       sources: [
         s3Deployment.Source.asset(
-          path.join(__dirname, "..", "..", "midi-proto", "dist")
+          path.join(__dirname, "..", "..", "boomtap", "dist")
         ),
       ],
       destinationBucket: assetBucket,
