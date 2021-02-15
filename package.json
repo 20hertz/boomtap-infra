@@ -1,9 +1,7 @@
 {
   "name": "boomtap-infra",
   "version": "0.1.0",
-  "bin": {
-    "boomtap-infra": "bin/boomtap-infra.js"
-  },
+  "bin": "bin/boomtap-infra.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
