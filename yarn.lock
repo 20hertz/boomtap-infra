@@ -297,6 +297,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/aws-iam@npm:^1.91.0":
+  version: 1.91.0
+  resolution: "@aws-cdk/aws-iam@npm:1.91.0"
+  dependencies:
+    "@aws-cdk/core": 1.91.0
+    "@aws-cdk/region-info": 1.91.0
+    constructs: ^3.2.0
+  peerDependencies:
+    "@aws-cdk/core": 1.91.0
+    "@aws-cdk/region-info": 1.91.0
+    constructs: ^3.2.0
+  checksum: 2e4c86b2a8e8f235d84196d23fd778587fefd446877b6a3a0b5a5a8c3fa66eff21d93cc7465b360cd27769fefc237098956ea8f3620365ac8dc7fd1b831081de
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/aws-kms@npm:1.89.0":
   version: 1.89.0
   resolution: "@aws-cdk/aws-kms@npm:1.89.0"
@@ -552,6 +567,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/cloud-assembly-schema@npm:1.91.0":
+  version: 1.91.0
+  resolution: "@aws-cdk/cloud-assembly-schema@npm:1.91.0"
+  dependencies:
+    jsonschema: ^1.4.0
+    semver: ^7.3.4
+  checksum: 117438f8e86530dd0b06ad24d0037572f4a3e99e1a26bbf389fe8fb32ca7af51637dc2f886e252337db4dfa7c2167d724e8a0e4bc4b3ea70219da82d7fde6eab
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/cloudformation-diff@npm:1.89.0":
   version: 1.89.0
   resolution: "@aws-cdk/cloudformation-diff@npm:1.89.0"
@@ -584,6 +609,27 @@ __metadata:
     "@aws-cdk/region-info": 1.89.0
     constructs: ^3.2.0
   checksum: 0a2368077d76296519a511c78613453fe5b274e90550e8b393d779b4252f3116209e78ed391e56532832f8c57df493b35d7098c8b60dbf0acb94091c37b592f3
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/core@npm:1.91.0":
+  version: 1.91.0
+  resolution: "@aws-cdk/core@npm:1.91.0"
+  dependencies:
+    "@aws-cdk/cloud-assembly-schema": 1.91.0
+    "@aws-cdk/cx-api": 1.91.0
+    "@aws-cdk/region-info": 1.91.0
+    "@balena/dockerignore": ^1.0.2
+    constructs: ^3.2.0
+    fs-extra: ^9.1.0
+    ignore: ^5.1.8
+    minimatch: ^3.0.4
+  peerDependencies:
+    "@aws-cdk/cloud-assembly-schema": 1.91.0
+    "@aws-cdk/cx-api": 1.91.0
+    "@aws-cdk/region-info": 1.91.0
+    constructs: ^3.2.0
+  checksum: f1e28f167e7761fedc75c20235b7193322dfddc5765c4c23eee4141edbecc4dce9d6c8eff122865dbf064850ea58d21dfe5b882285bc351096732d01ac59e1da
   languageName: node
   linkType: hard
 
@@ -624,6 +670,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-cdk/cx-api@npm:1.91.0":
+  version: 1.91.0
+  resolution: "@aws-cdk/cx-api@npm:1.91.0"
+  dependencies:
+    "@aws-cdk/cloud-assembly-schema": 1.91.0
+    semver: ^7.3.4
+  peerDependencies:
+    "@aws-cdk/cloud-assembly-schema": 1.91.0
+  checksum: eba8c01ea45c715846a6e7fb8a81e251cd04f76df0a92fd47c9f0eccf691de26e943c2bfad6091e0f37d1bb997f83fe999e6b61a4e3a5df3e2fd0af8f280c56d
+  languageName: node
+  linkType: hard
+
 "@aws-cdk/lambda-layer-awscli@npm:1.89.0":
   version: 1.89.0
   resolution: "@aws-cdk/lambda-layer-awscli@npm:1.89.0"
@@ -643,6 +701,13 @@ __metadata:
   version: 1.89.0
   resolution: "@aws-cdk/region-info@npm:1.89.0"
   checksum: c03239eac12ed5ee0a2b0c257ea1e7ee4c557623fb24e72fae6499f0718588a1f0bdea4ed61b0d9642ee19bcf48e0b2724faf30e9ae9864560f33970f1f14553
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/region-info@npm:1.91.0":
+  version: 1.91.0
+  resolution: "@aws-cdk/region-info@npm:1.91.0"
+  checksum: f7ce19a1571b1aeba4f1562ddb4945a5f89daaf63375eeb409d59a3236a81b93d47bac2768ed02c3559cbe309f84a755c74e99b0e8e6f047fecffbb9ebd7cf03
   languageName: node
   linkType: hard
 
@@ -1904,6 +1969,7 @@ __metadata:
     "@aws-cdk/assert": 1.89.0
     "@aws-cdk/aws-certificatemanager": ^1.89.0
     "@aws-cdk/aws-cloudfront": ^1.89.0
+    "@aws-cdk/aws-iam": ^1.91.0
     "@aws-cdk/aws-route53": ^1.89.0
     "@aws-cdk/aws-s3": ^1.89.0
     "@aws-cdk/aws-s3-deployment": ^1.89.0
@@ -5604,7 +5670,7 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"semver@npm:7.x, semver@npm:^7.3.2":
+"semver@npm:7.x, semver@npm:^7.3.2, semver@npm:^7.3.4":
   version: 7.3.4
   resolution: "semver@npm:7.3.4"
   dependencies:
