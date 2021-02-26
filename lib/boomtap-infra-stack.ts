@@ -4,7 +4,11 @@ import * as s3Deployment from "@aws-cdk/aws-s3-deployment";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as path from "path";
 import { CfnOutput } from "@aws-cdk/core";
-
+import {
+  CloudFrontWebDistributionProps,
+  OriginAccessIdentity,
+} from "@aws-cdk/aws-cloudfront";
+import { PolicyStatement } from "@aws-cdk/aws-iam";
 interface FrontEndProps {
   certificateArn: string;
   domainName: string;
@@ -16,31 +20,38 @@ export class FrontEndStack extends cdk.Stack {
     super(scope, id);
 
     const assetBucket = new s3.Bucket(this, `bt-static-website-${props.env}`, {
-      publicReadAccess: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       websiteIndexDocument: "index.html",
+      websiteErrorDocument: "index.html",
     });
+
+    const cloudFrontOAI = new OriginAccessIdentity(this, "OAI", {
+      comment: `OAI for Boomtap static website`,
+    });
+
+    const distributionProps: CloudFrontWebDistributionProps = {
+      viewerCertificate: {
+        aliases: [props.domainName],
+        props: {
+          acmCertificateArn: props.certificateArn,
+          sslSupportMethod: "sni-only",
+        },
+      },
+      originConfigs: [
+        {
+          s3OriginSource: {
+            s3BucketSource: assetBucket,
+            originAccessIdentity: cloudFrontOAI,
+          },
+          behaviors: [{ isDefaultBehavior: true }],
+        },
+      ],
+    };
 
     const distribution = new cloudfront.CloudFrontWebDistribution(
       this,
       "SiteDistribution",
-      {
-        viewerCertificate: {
-          aliases: [props.domainName],
-          props: {
-            acmCertificateArn: props.certificateArn,
-            sslSupportMethod: "sni-only",
-          },
-        },
-        originConfigs: [
-          {
-            s3OriginSource: {
-              s3BucketSource: assetBucket,
-            },
-            behaviors: [{ isDefaultBehavior: true }],
-          },
-        ],
-      }
+      distributionProps
     );
 
     new CfnOutput(this, "DistributionDomainName", {
@@ -56,5 +67,17 @@ export class FrontEndStack extends cdk.Stack {
       destinationBucket: assetBucket,
       distribution: distribution,
     });
+
+    const cloudfrontS3Access = new PolicyStatement();
+    cloudfrontS3Access.addActions("s3:GetBucket*");
+    cloudfrontS3Access.addActions("s3:GetObject*");
+    cloudfrontS3Access.addActions("s3:List*");
+    cloudfrontS3Access.addResources(assetBucket.bucketArn);
+    cloudfrontS3Access.addResources(`${assetBucket.bucketArn}/*`);
+    cloudfrontS3Access.addCanonicalUserPrincipal(
+      cloudFrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId
+    );
+
+    assetBucket.addToResourcePolicy(cloudfrontS3Access);
   }
 }
