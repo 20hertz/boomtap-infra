@@ -3,27 +3,34 @@ import * as s3 from "@aws-cdk/aws-s3";
 import * as s3Deployment from "@aws-cdk/aws-s3-deployment";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import * as path from "path";
-import { CfnOutput } from "@aws-cdk/core";
+import { CfnOutput, Environment } from "@aws-cdk/core";
 import {
   CloudFrontWebDistributionProps,
   OriginAccessIdentity,
 } from "@aws-cdk/aws-cloudfront";
 import { PolicyStatement } from "@aws-cdk/aws-iam";
-interface FrontEndProps {
+import { ARecord, HostedZone, RecordTarget } from "@aws-cdk/aws-route53";
+import { CloudFrontTarget } from "@aws-cdk/aws-route53-targets";
+interface StackProps {
   certificateArn: string;
   domainName: string;
-  env: string;
+  envName: string;
+  env: Environment;
 }
 
 export class FrontEndStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: FrontEndProps) {
-    super(scope, id);
+  constructor(scope: cdk.Construct, id: string, props: StackProps) {
+    super(scope, id, props);
 
-    const assetBucket = new s3.Bucket(this, `bt-static-website-${props.env}`, {
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      websiteIndexDocument: "index.html",
-      websiteErrorDocument: "index.html",
-    });
+    const assetBucket = new s3.Bucket(
+      this,
+      `bt-static-website-${props.envName}`,
+      {
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        websiteIndexDocument: "index.html",
+        websiteErrorDocument: "index.html",
+      }
+    );
 
     const cloudFrontOAI = new OriginAccessIdentity(this, "OAI", {
       comment: `OAI for Boomtap static website`,
@@ -55,6 +62,7 @@ export class FrontEndStack extends cdk.Stack {
     );
 
     new CfnOutput(this, "DistributionDomainName", {
+      description: "The CloudFront domain of the website",
       value: distribution.distributionDomainName,
     });
 
@@ -79,5 +87,16 @@ export class FrontEndStack extends cdk.Stack {
     );
 
     assetBucket.addToResourcePolicy(cloudfrontS3Access);
+
+    const zone = HostedZone.fromLookup(this, props.domainName, {
+      domainName: props.domainName,
+      privateZone: false,
+    });
+
+    new ARecord(this, "Alias", {
+      zone,
+      recordName: props.domainName,
+      target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
+    });
   }
 }

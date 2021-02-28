@@ -11,9 +11,3 @@
  * `cdk destroy`     clean everything, except S3 bucket
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-## Things to do in AWS console after deploying a stack
-Update A record route
-  - Go to route53
-  - Edit boomtap.io A type record
-  - Under Value/Route traffic to, update the cloudfront domain name
