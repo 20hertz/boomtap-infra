@@ -6,7 +6,9 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "deploy:prod": "cdk deploy -c config=prod --profile boomtap-dev",
+    "destroy:prod": "cdk destroy -c config=prod --profile boomtap-dev"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.89.0",

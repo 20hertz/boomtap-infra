@@ -27,10 +27,15 @@ export class FrontEndStack extends cdk.Stack {
       `bt-static-website-${props.envName}`,
       {
         removalPolicy: cdk.RemovalPolicy.DESTROY,
+        autoDeleteObjects: true,
         websiteIndexDocument: "index.html",
         websiteErrorDocument: "index.html",
       }
     );
+
+    new CfnOutput(this, "AssetBucketName", {
+      value: assetBucket.bucketName,
+    });
 
     const cloudFrontOAI = new OriginAccessIdentity(this, "OAI", {
       comment: `OAI for Boomtap static website`,
@@ -61,15 +66,15 @@ export class FrontEndStack extends cdk.Stack {
       distributionProps
     );
 
-    new CfnOutput(this, "DistributionDomainName", {
-      description: "The CloudFront domain of the website",
-      value: distribution.distributionDomainName,
+    new CfnOutput(this, "DistributionId", {
+      value: distribution.distributionId,
     });
 
     new s3Deployment.BucketDeployment(this, "DeployWebsite", {
       sources: [
         s3Deployment.Source.asset(
-          path.join(__dirname, "..", "..", "boomtap", "dist")
+          path.join(__dirname, "..", "..", "boomtap", "dist"),
+          { exclude: ["**"] }
         ),
       ],
       destinationBucket: assetBucket,
