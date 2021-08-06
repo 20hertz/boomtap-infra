@@ -11,6 +11,30 @@ import {
 import { PolicyStatement } from "@aws-cdk/aws-iam";
 import { ARecord, HostedZone, RecordTarget } from "@aws-cdk/aws-route53";
 import { CloudFrontTarget } from "@aws-cdk/aws-route53-targets";
+
+
+import { SPADeploy } from 'cdk-spa-deploy';
+
+export class FrontEndStackNew extends cdk.Stack {
+  constructor(scope: cdk.Construct, id?: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+    // new SPADeploy(this, 'spaDeploy')
+    //   .createBasicSite({
+    //     indexDoc: 'index.html',
+    //     websiteFolder: path.join(__dirname, "..", "..", "boomtap", "dist"),
+    //   });
+      
+      new SPADeploy(this, 'cfDeploy')
+      .createSiteWithCloudfront({
+        indexDoc: 'index.html',
+        websiteFolder: path.join(__dirname, "..", "..", "boomtap", "dist"),
+        certificateARN: 'arn:aws:acm:ca-central-1:770668172371:certificate/dae6373d-9447-4b18-a374-253f94ca2a0e',
+        cfAliases: ['backstage.boomtap.io']
+      });
+  }
+}
+
 interface StackProps {
   certificateArn: string;
   domainName: string;

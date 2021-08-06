@@ -1,9 +1,13 @@
-#!/usr/bin/env node
+// #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "@aws-cdk/core";
-import { FrontEndStack } from "../lib/boomtap-infra-stack";
+import { FrontEndStack, FrontEndStackNew } from "../lib/boomtap-infra-stack";
 
 const app = new cdk.App();
+
+new FrontEndStackNew(app, 'FrontEndStackNew');
+
+
 
 const getConfig = (): Config => {
   const env = app.node.tryGetContext("config");
