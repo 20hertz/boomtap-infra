@@ -7,7 +7,9 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "deploy:staging": "cdk deploy -c config=staging --profile boomtap-dev",
     "deploy:prod": "cdk deploy -c config=prod --profile boomtap-dev",
+    "destroy:staging": "cdk destroy -c config=staging --profile boomtap-dev",
     "destroy:prod": "cdk destroy -c config=prod --profile boomtap-dev"
   },
   "devDependencies": {

@@ -14,11 +14,15 @@ const getConfig = (): Config => {
     );
 
   return {
+    CertificateArn: app.node.tryGetContext(env)["CertificateArn"],
+    DomainName: app.node.tryGetContext(env)["DomainName"],
     Environment: app.node.tryGetContext(env)["Environment"],
   };
 };
 
 interface Config {
+  readonly CertificateArn: string;
+  readonly DomainName: string;
   readonly Environment: string;
 }
 
@@ -29,9 +33,8 @@ function capitalize(string: string) {
 const config = getConfig();
 const stackName = `FrontEndStack${capitalize(config.Environment)}`;
 const stackProps = {
-  certificateArn:
-    "arn:aws:acm:us-east-1:770668172371:certificate/913a571a-e758-48c7-a6d2-3b3c5191bf91",
-  domainName: "boomtap.io",
+  certificateArn: config.CertificateArn,
+  domainName: config.DomainName,
   envName: config.Environment,
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,

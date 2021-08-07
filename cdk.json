@@ -4,9 +4,15 @@
     "@aws-cdk/core:enableStackNameDuplicates": "false",
     "aws-cdk:enableDiffNoFail": "true",
     "@aws-cdk/core:stackRelativeExports": "true",
-
+    "staging": {
+      "CertificateArn": "arn:aws:acm:ca-central-1:770668172371:certificate/dae6373d-9447-4b18-a374-253f94ca2a0e",
+      "Environment": "staging",
+      "DomainName": "backstage.boomtap.io"
+    },
     "prod": {
-      "Environment": "prod"
+      "CertificateArn": "arn:aws:acm:ca-central-1:770668172371:certificate/dae6373d-9447-4b18-a374-253f94ca2a0e",
+      "Environment": "prod",
+      "DomainName": "boomtap.io"
     }
   }
 }

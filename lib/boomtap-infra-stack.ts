@@ -7,10 +7,12 @@ import { CfnOutput, Environment } from "@aws-cdk/core";
 import {
   CloudFrontWebDistributionProps,
   OriginAccessIdentity,
+  ViewerCertificate,
 } from "@aws-cdk/aws-cloudfront";
 import { PolicyStatement } from "@aws-cdk/aws-iam";
 import { ARecord, HostedZone, RecordTarget } from "@aws-cdk/aws-route53";
 import { CloudFrontTarget } from "@aws-cdk/aws-route53-targets";
+import { DnsValidatedCertificate } from "@aws-cdk/aws-certificatemanager";
 interface StackProps {
   certificateArn: string;
   domainName: string;
@@ -41,14 +43,28 @@ export class FrontEndStack extends cdk.Stack {
       comment: `OAI for Boomtap static website`,
     });
 
+    const zone = HostedZone.fromLookup(this, 'HostedZone', {
+      domainName: 'boomtap.io',
+      privateZone: false,
+    });
+
+    const cert = new DnsValidatedCertificate(this, 'Certificate', {
+      hostedZone: zone,
+      domainName: props.domainName,
+      region: 'ca-central-1'
+    })
+
     const distributionProps: CloudFrontWebDistributionProps = {
-      viewerCertificate: {
+      viewerCertificate: ViewerCertificate.fromAcmCertificate(cert, {
         aliases: [props.domainName],
-        props: {
-          acmCertificateArn: props.certificateArn,
-          sslSupportMethod: "sni-only",
-        },
-      },
+      }),
+      // viewerCertificate: {
+      //   aliases: [props.domainName],
+      //   props: {
+      //     acmCertificateArn: props.certificateArn,
+      //     sslSupportMethod: "sni-only",
+      //   },
+      // },
       originConfigs: [
         {
           s3OriginSource: {
@@ -92,11 +108,6 @@ export class FrontEndStack extends cdk.Stack {
     );
 
     assetBucket.addToResourcePolicy(cloudfrontS3Access);
-
-    const zone = HostedZone.fromLookup(this, props.domainName, {
-      domainName: props.domainName,
-      privateZone: false,
-    });
 
     new ARecord(this, "Alias", {
       zone,
