@@ -12,7 +12,26 @@ import {
 import { PolicyStatement } from "@aws-cdk/aws-iam";
 import { ARecord, HostedZone, RecordTarget } from "@aws-cdk/aws-route53";
 import { CloudFrontTarget } from "@aws-cdk/aws-route53-targets";
-import { DnsValidatedCertificate } from "@aws-cdk/aws-certificatemanager";
+
+
+import { SPADeploy } from 'cdk-spa-deploy';
+
+export class FrontEndStackNew extends cdk.Stack {
+  constructor(scope: cdk.Construct, id?: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+      
+      new SPADeploy(this, 'cfDeploy')
+      .createSiteFromHostedZone({
+        zoneName: 'boomtap.io',
+        indexDoc: 'index.html',
+        websiteFolder: path.join(__dirname, "..", "..", "boomtap", "dist"),
+        subdomain: 'backstage'
+      })
+
+  }
+}
+
 interface StackProps {
   certificateArn: string;
   domainName: string;
@@ -48,23 +67,14 @@ export class FrontEndStack extends cdk.Stack {
       privateZone: false,
     });
 
-    const cert = new DnsValidatedCertificate(this, 'Certificate', {
-      hostedZone: zone,
-      domainName: props.domainName,
-      region: 'ca-central-1'
-    })
-
     const distributionProps: CloudFrontWebDistributionProps = {
-      viewerCertificate: ViewerCertificate.fromAcmCertificate(cert, {
+      viewerCertificate: {
         aliases: [props.domainName],
-      }),
-      // viewerCertificate: {
-      //   aliases: [props.domainName],
-      //   props: {
-      //     acmCertificateArn: props.certificateArn,
-      //     sslSupportMethod: "sni-only",
-      //   },
-      // },
+        props: {
+          acmCertificateArn: props.certificateArn,
+          sslSupportMethod: "sni-only",
+        },
+      },
       originConfigs: [
         {
           s3OriginSource: {

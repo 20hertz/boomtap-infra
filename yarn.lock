@@ -520,7 +520,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aws-cdk/aws-route53-targets@npm:^1.117.0":
+"@aws-cdk/aws-route53-patterns@npm:^1.117.0":
+  version: 1.117.0
+  resolution: "@aws-cdk/aws-route53-patterns@npm:1.117.0"
+  dependencies:
+    "@aws-cdk/aws-certificatemanager": 1.117.0
+    "@aws-cdk/aws-cloudfront": 1.117.0
+    "@aws-cdk/aws-iam": 1.117.0
+    "@aws-cdk/aws-route53": 1.117.0
+    "@aws-cdk/aws-route53-targets": 1.117.0
+    "@aws-cdk/aws-s3": 1.117.0
+    "@aws-cdk/core": 1.117.0
+    "@aws-cdk/region-info": 1.117.0
+    constructs: ^3.3.69
+  peerDependencies:
+    "@aws-cdk/aws-certificatemanager": 1.117.0
+    "@aws-cdk/aws-cloudfront": 1.117.0
+    "@aws-cdk/aws-iam": 1.117.0
+    "@aws-cdk/aws-route53": 1.117.0
+    "@aws-cdk/aws-route53-targets": 1.117.0
+    "@aws-cdk/aws-s3": 1.117.0
+    "@aws-cdk/core": 1.117.0
+    "@aws-cdk/region-info": 1.117.0
+    constructs: ^3.3.69
+  checksum: 14e0929ed47ef88083f3922e2e7bfb66071e6868660a2d3f7a8e6e5de1de358bbca3648092c9e9733e81eb0cf93345cbf12a62093cc3722e6a6ad0fe02323c23
+  languageName: node
+  linkType: hard
+
+"@aws-cdk/aws-route53-targets@npm:1.117.0, @aws-cdk/aws-route53-targets@npm:^1.117.0":
   version: 1.117.0
   resolution: "@aws-cdk/aws-route53-targets@npm:1.117.0"
   dependencies:
@@ -2294,6 +2321,7 @@ __metadata:
     "@aws-cdk/aws-cloudfront": ^1.117.0
     "@aws-cdk/aws-iam": ^1.117.0
     "@aws-cdk/aws-route53": ^1.117.0
+    "@aws-cdk/aws-route53-patterns": ^1.117.0
     "@aws-cdk/aws-route53-targets": ^1.117.0
     "@aws-cdk/aws-s3": ^1.117.0
     "@aws-cdk/aws-s3-deployment": ^1.117.0
@@ -2301,6 +2329,8 @@ __metadata:
     "@types/jest": ^26.0.24
     "@types/node": 14.17.9
     aws-cdk: 1.117.0
+    cdk-spa-deploy: ^1.104.1
+    constructs: ^3.3.115
     jest: ^27.0.6
     source-map-support: ^0.5.19
     ts-jest: ^27.0.4
@@ -2469,6 +2499,24 @@ __metadata:
     cdk-assets: bin/cdk-assets
     docker-credential-cdk-assets: bin/docker-credential-cdk-assets
   checksum: 01ac3fc63744b75718ddf3ff6a9d71652a2a56fd7856ad41ecad40673d6070eb4939c91021ae57b956d5a9cc1ad625a67d2474a08a73cb8b1afca24699d5a383
+  languageName: node
+  linkType: hard
+
+"cdk-spa-deploy@npm:^1.104.1":
+  version: 1.104.1
+  resolution: "cdk-spa-deploy@npm:1.104.1"
+  peerDependencies:
+    "@aws-cdk/aws-certificatemanager": ^1.103.0
+    "@aws-cdk/aws-cloudfront": ^1.103.0
+    "@aws-cdk/aws-iam": ^1.103.0
+    "@aws-cdk/aws-route53": ^1.103.0
+    "@aws-cdk/aws-route53-patterns": ^1.103.0
+    "@aws-cdk/aws-route53-targets": ^1.103.0
+    "@aws-cdk/aws-s3": ^1.103.0
+    "@aws-cdk/aws-s3-deployment": ^1.103.0
+    "@aws-cdk/core": ^1.103.0
+    constructs: ^3.3.75
+  checksum: 8689170fe4831ae9ff5c4a4bd2eadb631d70bf24f64b7a0a8b5e7f9f4fe0514830b39a38d275f5b127fb089b67e6a34f405216e0f4b935341edd4ae936d95c35
   languageName: node
   linkType: hard
 
@@ -2647,6 +2695,13 @@ __metadata:
   version: 1.1.0
   resolution: "console-control-strings@npm:1.1.0"
   checksum: 58a404d951bf270494fb91e136cf064652c1208ccedac23e4da24e6a3a3933998f302cadc45cbf6582a007a4aa44dab944e84056b24e3b1964e9a28aeedf76c9
+  languageName: node
+  linkType: hard
+
+"constructs@npm:^3.3.115":
+  version: 3.3.115
+  resolution: "constructs@npm:3.3.115"
+  checksum: f68efeb65f050f5b72caad6e501d9e3766cb66b99ec63a53f3355d7e4a05f157c062198a3a92f2344e1fc849280051cc1ab335906b04db1cda11cbcf39ab0ed4
   languageName: node
   linkType: hard
 
