@@ -2330,7 +2330,7 @@ __metadata:
     "@types/node": 14.17.9
     aws-cdk: 1.117.0
     cdk-spa-deploy: ^1.104.1
-    constructs: ^3.3.115
+    constructs: ^3.3.117
     jest: ^27.0.6
     source-map-support: ^0.5.19
     ts-jest: ^27.0.4
@@ -2698,10 +2698,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"constructs@npm:^3.3.115":
-  version: 3.3.115
-  resolution: "constructs@npm:3.3.115"
-  checksum: f68efeb65f050f5b72caad6e501d9e3766cb66b99ec63a53f3355d7e4a05f157c062198a3a92f2344e1fc849280051cc1ab335906b04db1cda11cbcf39ab0ed4
+"constructs@npm:^3.3.117":
+  version: 3.3.117
+  resolution: "constructs@npm:3.3.117"
+  checksum: 3526f540496dd36c5682c645facec2c4408c1df020e4ef6f257402d9c25b7990016d4ee048987122b9a4d9ee62316e42ab9b300e93f350db2ef823e7f72f736e
   languageName: node
   linkType: hard
 

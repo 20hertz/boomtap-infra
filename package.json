@@ -33,7 +33,7 @@
     "@aws-cdk/aws-s3-deployment": "^1.117.0",
     "@aws-cdk/core": "1.117.0",
     "cdk-spa-deploy": "^1.104.1",
-    "constructs": "^3.3.115",
+    "constructs": "^3.3.117",
     "source-map-support": "^0.5.19"
   }
 }
