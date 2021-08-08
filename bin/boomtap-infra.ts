@@ -5,7 +5,12 @@ import { FrontEndStack, FrontEndStackNew } from "../lib/boomtap-infra-stack";
 
 const app = new cdk.App();
 
-new FrontEndStackNew(app, 'FrontEndStackNew');
+new FrontEndStackNew(app, 'FrontEndStackNew', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  }
+});
 
 
 
@@ -34,7 +39,7 @@ const config = getConfig();
 const stackName = `FrontEndStack${capitalize(config.Environment)}`;
 const stackProps = {
   certificateArn:
-    "arn:aws:acm:us-east-1:770668172371:certificate/913a571a-e758-48c7-a6d2-3b3c5191bf91",
+    "arn:aws:acm:us-east-1:770668172371:certificate/9be2040c-0954-4749-aa32-80bd8d08d4c2",
   domainName: "boomtap.io",
   envName: config.Environment,
   env: {
