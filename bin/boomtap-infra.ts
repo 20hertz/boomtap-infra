@@ -1,16 +1,10 @@
 // #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "@aws-cdk/core";
-import { FrontEndStack, FrontEndStackNew } from "../lib/boomtap-infra-stack";
+import { FrontEndStack } from "../lib/boomtap-infra-stack";
+import { FirewallStack } from "../lib/firewall-stack";
 
 const app = new cdk.App();
-
-new FrontEndStackNew(app, 'FrontEndStackNew', {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-  }
-});
 
 
 
@@ -23,16 +17,18 @@ const getConfig = (): Config => {
     );
 
   return {
-    CertificateArn: app.node.tryGetContext(env)["CertificateArn"],
-    DomainName: app.node.tryGetContext(env)["DomainName"],
+    IPWhiteList: app.node.tryGetContext(env)["IPWhiteList"],
     Environment: app.node.tryGetContext(env)["Environment"],
+    Subdomain: app.node.tryGetContext(env)["Subdomain"],
+    WafWebAclArn: app.node.tryGetContext(env)["WafWebAclArn"],
   };
 };
 
 interface Config {
-  readonly CertificateArn: string;
-  readonly DomainName: string;
-  readonly Environment: string;
+  readonly Environment: string
+  readonly IPWhiteList?: string[]
+  readonly Subdomain?: string
+  readonly WafWebAclArn?: string
 }
 
 function capitalize(string: string) {
@@ -40,14 +36,24 @@ function capitalize(string: string) {
 }
 
 const config = getConfig();
-const stackName = `FrontEndStack${capitalize(config.Environment)}`;
-const stackProps = {
-  certificateArn: config.CertificateArn,
-  domainName: config.DomainName,
-  envName: config.Environment,
+
+
+new FirewallStack(app, 'FirewallStack', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: 'us-east-1',
+  }
+})
+
+const customProps = {
+  ipWhiteList: config.IPWhiteList,
+  subdomain: config.Subdomain,
+  wafAclArn: config.WafWebAclArn
+};
+
+new FrontEndStack(app, `FrontEndStack${capitalize(config.Environment)}`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
-};
-new FrontEndStack(app, stackName, stackProps);
+}, customProps)

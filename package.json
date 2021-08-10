@@ -7,10 +7,12 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:staging": "cdk deploy -c config=staging --profile boomtap-dev",
-    "deploy:prod": "cdk deploy -c config=prod --profile boomtap-dev",
-    "destroy:staging": "cdk destroy -c config=staging --profile boomtap-dev",
-    "destroy:prod": "cdk destroy -c config=prod --profile boomtap-dev"
+    "deploy:firewall": "cdk deploy FirewallStack -c config=staging --profile boomtap-dev",
+    "destroy:firewall": "cdk destroy FirewallStack -c config=staging --profile boomtap-dev",
+    "deploy:staging": "cdk deploy FrontEndStackStaging -c config=staging --profile boomtap-dev",
+    "deploy:prod": "cdk deploy FrontEndStackProd -c config=prod --profile boomtap-dev",
+    "destroy:staging": "cdk destroy FrontEndStackStaging -c config=staging --profile boomtap-dev",
+    "destroy:prod": "cdk destroy FrontEndStackProd -c config=prod --profile boomtap-dev"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.117.0",
@@ -31,6 +33,7 @@
     "@aws-cdk/aws-route53-targets": "^1.117.0",
     "@aws-cdk/aws-s3": "^1.117.0",
     "@aws-cdk/aws-s3-deployment": "^1.117.0",
+    "@aws-cdk/aws-wafv2": "^1.117.0",
     "@aws-cdk/core": "1.117.0",
     "cdk-spa-deploy": "^1.104.1",
     "constructs": "^3.3.117",

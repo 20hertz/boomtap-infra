@@ -5,14 +5,13 @@
     "aws-cdk:enableDiffNoFail": "true",
     "@aws-cdk/core:stackRelativeExports": "true",
     "staging": {
-      "CertificateArn": "arn:aws:acm:ca-central-1:770668172371:certificate/dae6373d-9447-4b18-a374-253f94ca2a0e",
+      "WafWebAclArn": "arn:aws:wafv2:us-east-1:770668172371:global/webacl/Waf-CloudFront/dccfa45e-03f6-41e9-be05-ce754bef2156",
+      "IPWhiteList": ["135.19.69.217"],
       "Environment": "staging",
-      "DomainName": "backstage.boomtap.io"
+      "Subdomain": "backstage"
     },
     "prod": {
-      "CertificateArn": "arn:aws:acm:ca-central-1:770668172371:certificate/dae6373d-9447-4b18-a374-253f94ca2a0e",
-      "Environment": "prod",
-      "DomainName": "boomtap.io"
+      "Environment": "prod"
     }
   }
 }
