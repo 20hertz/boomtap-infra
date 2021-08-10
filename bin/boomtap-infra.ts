@@ -1,21 +1,59 @@
-#!/usr/bin/env node
+// #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "@aws-cdk/core";
 import { FrontEndStack } from "../lib/boomtap-infra-stack";
+import { FirewallStack } from "../lib/firewall-stack";
 
-const stackNameSuffix = "Prod";
+const app = new cdk.App();
 
-const stackProps = {
-  certificateArn:
-    "arn:aws:acm:us-east-1:770668172371:certificate/913a571a-e758-48c7-a6d2-3b3c5191bf91",
-  domainName: "boomtap.io",
-  envName: "prod",
+
+
+const getConfig = (): Config => {
+  const env = app.node.tryGetContext("config");
+
+  if (!env)
+    throw new Error(
+      "Context variable missing on CDK command. Pass in as `-c config=XXX`"
+    );
+
+  return {
+    IPWhiteList: app.node.tryGetContext(env)["IPWhiteList"],
+    Environment: app.node.tryGetContext(env)["Environment"],
+    Subdomain: app.node.tryGetContext(env)["Subdomain"],
+    WafWebAclArn: app.node.tryGetContext(env)["WafWebAclArn"],
+  };
+};
+
+interface Config {
+  readonly Environment: string
+  readonly IPWhiteList?: string[]
+  readonly Subdomain?: string
+  readonly WafWebAclArn?: string
+}
+
+function capitalize(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+const config = getConfig();
+
+
+new FirewallStack(app, 'FirewallStack', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: 'us-east-1',
+  }
+})
+
+const customProps = {
+  ipWhiteList: config.IPWhiteList,
+  subdomain: config.Subdomain,
+  wafAclArn: config.WafWebAclArn
+};
+
+new FrontEndStack(app, `FrontEndStack${capitalize(config.Environment)}`, {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
-};
-
-const app = new cdk.App();
-
-new FrontEndStack(app, `FrontEndStack${stackNameSuffix}`, stackProps);
+}, customProps)
