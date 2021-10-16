@@ -5,8 +5,11 @@
     "aws-cdk:enableDiffNoFail": "true",
     "@aws-cdk/core:stackRelativeExports": "true",
     "staging": {
-      "WafWebAclArn": "arn:aws:wafv2:us-east-1:770668172371:global/webacl/Waf-CloudFront/dccfa45e-03f6-41e9-be05-ce754bef2156",
-      "IPWhiteList": ["135.19.69.217"],
+      "WafWebAclArn": "arn:aws:wafv2:us-east-1:770668172371:global/webacl/Waf-CloudFront/58fcc988-4ddb-481c-97bb-9acc8cd5e249",
+      "IPWhiteList": [
+        { "name": "Steph laptop", "address": "135.19.69.217/32" },
+        { "name": "Steph mobile", "address": "135.19.70.135/32" }
+      ],
       "Environment": "staging",
       "Subdomain": "backstage"
     },

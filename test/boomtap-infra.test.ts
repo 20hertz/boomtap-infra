@@ -4,7 +4,7 @@ import {
   MatchStyle,
 } from "@aws-cdk/assert";
 import * as cdk from "@aws-cdk/core";
-import * as BoomtapInfra from "../lib/boomtap-infra-stack";
+import * as BoomtapInfra from "../lib/front-end-stack";
 
 test("Empty Stack", () => {
   const app = new cdk.App();
