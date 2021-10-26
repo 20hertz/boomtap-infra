@@ -3,6 +3,7 @@ import "source-map-support/register";
 import * as cdk from "@aws-cdk/core";
 import { FrontEndStack } from "../lib/webapp-stack";
 import { FirewallStack } from "../lib/firewall-stack";
+import { LandingPageStack } from "../lib/landingpage-stack";
 
 const app = new cdk.App();
 
@@ -47,11 +48,6 @@ new FirewallStack(
   config.IPWhiteList
 );
 
-const customProps = {
-  subdomain: config.Subdomain,
-  wafAclArn: config.WafWebAclArn,
-};
-
 new FrontEndStack(
   app,
   `FrontEndStack${capitalize(config.Environment)}`,
@@ -61,5 +57,23 @@ new FrontEndStack(
       region: process.env.CDK_DEFAULT_REGION,
     },
   },
-  customProps
+  {
+    subdomain: config.Subdomain,
+    wafAclArn: config.WafWebAclArn,
+  }
+);
+
+new LandingPageStack(
+  app,
+  `LandingPageStack${capitalize(config.Environment)}`,
+  {
+    env: {
+      account: process.env.CDK_DEFAULT_ACCOUNT,
+      region: process.env.CDK_DEFAULT_REGION,
+    },
+  },
+  {
+    subdomain: "feed",
+    wafAclArn: config.WafWebAclArn,
+  }
 );
