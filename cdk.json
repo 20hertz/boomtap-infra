@@ -5,7 +5,7 @@
     "aws-cdk:enableDiffNoFail": "true",
     "@aws-cdk/core:stackRelativeExports": "true",
     "staging": {
-      "WafWebAclArn": "arn:aws:wafv2:us-east-1:770668172371:global/webacl/Waf-CloudFront/58fcc988-4ddb-481c-97bb-9acc8cd5e249",
+      "WafWebAclArn": "arn:aws:wafv2:us-east-1:770668172371:global/webacl/Waf-CloudFront/db089690-848e-47c2-9697-dee59f39cd6d",
       "IPWhiteList": [
         { "name": "Steph laptop", "address": "135.19.69.217/32" },
         { "name": "Steph mobile", "address": "135.19.70.135/32" }

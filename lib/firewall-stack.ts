@@ -46,10 +46,6 @@ export class FirewallStack extends cdk.Stack {
       rules: rules,
     });
 
-    new cdk.CfnOutput(this, "wafAclCloudFrontArn", {
-      value: wafAclCloudFront.attrArn,
-      description: "WAF CloudFront arn",
-      exportName: "WafCloudFrontStack:WafAclCloudFrontArn",
-    });
+    this.exportValue(wafAclCloudFront.attrArn);
   }
 }
