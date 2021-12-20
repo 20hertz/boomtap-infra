@@ -1,7 +1,10 @@
 import * as cdk from "@aws-cdk/core";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
+import * as s3 from "@aws-cdk/aws-s3";
 import { SPADeploy } from "cdk-spa-deploy";
 import path = require("path");
+import { RemovalPolicy } from "@aws-cdk/core";
+import { CachePolicy } from "@aws-cdk/aws-cloudfront";
 
 interface CustomProps {
   subdomain?: string;
@@ -17,7 +20,7 @@ export class FrontEndStack extends cdk.Stack {
   ) {
     super(scope, id, props);
 
-    const { distribution } = new SPADeploy(
+    const { distribution, websiteBucket } = new SPADeploy(
       this,
       "cfDeploy"
     ).createSiteFromHostedZone({
@@ -28,13 +31,23 @@ export class FrontEndStack extends cdk.Stack {
       zoneName: "boomtap.io",
     });
 
+    websiteBucket.applyRemovalPolicy(RemovalPolicy.DESTROY);
+
+    const cfnDistro = distribution.node
+      .defaultChild as cloudfront.CfnDistribution;
+
+    // cfnDistro.addPropertyOverride(
+    //   "DefaultCacheBehavior.CachePolicyId",
+    //   CachePolicy.CACHING_OPTIMIZED
+    // );
+
     if (customProps?.wafAclArn) {
-      const cfnDistro = distribution.node
-        .defaultChild as cloudfront.CfnDistribution;
       cfnDistro.addPropertyOverride(
         "DistributionConfig.WebACLId",
         customProps.wafAclArn
       );
     }
+
+    this.exportValue(websiteBucket.bucketName);
   }
 }
