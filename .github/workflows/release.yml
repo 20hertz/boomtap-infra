@@ -11,7 +11,7 @@ on:
       AWS_REGION:
         description: "Region to deploy to."
         required: true
-        
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
