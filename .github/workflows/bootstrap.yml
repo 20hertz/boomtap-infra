@@ -31,3 +31,9 @@ jobs:
           node-version: "16"
 
       - run: yarn install
+
+      - name: Synth stack
+        run: yarn cdk synth InfraStack
+
+      - name: Deploy stack
+        run: yarn cdk deploy InfraStack --require-approval never
