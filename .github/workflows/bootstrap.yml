@@ -32,8 +32,8 @@ jobs:
 
       - run: yarn install
 
-      - name: Synth stack
-        run: yarn cdk synth InfraStack
+      # - name: Synth stack
+      #   run: yarn cdk synth InfraStack
 
-      - name: Deploy stack
-        run: yarn cdk deploy InfraStack --require-approval never
+      # - name: Deploy stack
+      #   run: yarn cdk deploy InfraStack --require-approval never
