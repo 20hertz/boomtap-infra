@@ -1,8 +1,5 @@
 name: Bootstrap
 on:
-  # push:
-  #   branches:
-  #     - unbind-from-cdk-spa-deploy
   workflow_dispatch:
     inputs:
       AWS_ACCESS_KEY_ID:
@@ -34,9 +31,3 @@ jobs:
           node-version: "16"
 
       - run: yarn install
-
-      # - name: Synth stack
-      #   run: yarn cdk synth InfraStack
-
-      # - name: Deploy stack
-      #   run: yarn cdk deploy InfraStack --require-approval never
