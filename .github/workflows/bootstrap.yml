@@ -1,8 +1,8 @@
 name: Bootstrap
 on:
-  push:
-    branches:
-      - unbind-from-cdk-spa-deploy
+  # push:
+  #   branches:
+  #     - unbind-from-cdk-spa-deploy
   workflow_dispatch:
     inputs:
       AWS_ACCESS_KEY_ID:
