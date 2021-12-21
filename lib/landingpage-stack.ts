@@ -1,40 +1,29 @@
-import * as cdk from "@aws-cdk/core";
-import * as cloudfront from "@aws-cdk/aws-cloudfront";
-import { SPADeploy } from "cdk-spa-deploy";
-import path = require("path");
+import * as path from "path";
+import { Construct } from "constructs";
+import {
+  RemovalPolicy,
+  Stack,
+  StackProps,
+  aws_s3 as s3,
+  aws_s3_deployment as s3deploy,
+} from "aws-cdk-lib";
 
-interface CustomProps {
-  subdomain?: string;
-  wafAclArn?: string;
-}
-
-export class LandingPageStack extends cdk.Stack {
-  constructor(
-    scope: cdk.Construct,
-    id?: string,
-    props?: cdk.StackProps,
-    customProps?: CustomProps
-  ) {
+export class LandingPageStack extends Stack {
+  constructor(scope: Construct, id?: string, props?: StackProps) {
     super(scope, id, props);
 
-    const { distribution } = new SPADeploy(
-      this,
-      "cfDeploy"
-    ).createSiteFromHostedZone({
-      errorDoc: customProps?.wafAclArn ? undefined : "index.html",
-      indexDoc: "index.html",
-      subdomain: customProps?.subdomain ? customProps.subdomain : undefined,
-      websiteFolder: path.join(__dirname, "..", "placeholder"),
-      zoneName: "boomtap.io",
+    const siteBucket = new s3.Bucket(this, "SiteBucket", {
+      autoDeleteObjects: true,
+      publicReadAccess: false,
+      removalPolicy: RemovalPolicy.DESTROY,
+      websiteIndexDocument: "index.html",
     });
 
-    if (customProps?.wafAclArn) {
-      const cfnDistro = distribution.node
-        .defaultChild as cloudfront.CfnDistribution;
-      cfnDistro.addPropertyOverride(
-        "DistributionConfig.WebACLId",
-        customProps.wafAclArn
-      );
-    }
+    new s3deploy.BucketDeployment(this, "CdkDeploymentBucket", {
+      sources: [
+        s3deploy.Source.asset(path.join(__dirname, "..", "placeholder")),
+      ],
+      destinationBucket: siteBucket,
+    });
   }
 }

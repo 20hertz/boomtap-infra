@@ -3,13 +3,13 @@ import {
   matchTemplate,
   MatchStyle,
 } from "@aws-cdk/assert";
-import * as cdk from "@aws-cdk/core";
-import * as BoomtapInfra from "../lib/front-end-stack";
+import * as cdk from "aws-cdk-lib";
+import * as BoomtapInfra from "../lib/landingpage-stack";
 
 test("Empty Stack", () => {
   const app = new cdk.App();
   // WHEN
-  const stack = new BoomtapInfra.FrontEndStack(app, "MyTestStack");
+  const stack = new BoomtapInfra.LandingPageStack(app, "TestLandingPageStack");
   // THEN
   expectCDK(stack).to(
     matchTemplate(

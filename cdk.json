@@ -1,9 +1,22 @@
 {
-  "app": "npx ts-node bin/boomtap-infra.ts",
+  "app": "npx ts-node --prefer-ts-exts bin/boomtap-infra.ts",
+  "watch": {
+    "include": ["**"],
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "**/*.d.ts",
+      "**/*.js",
+      "tsconfig.json",
+      "package*.json",
+      "yarn.lock",
+      "node_modules",
+      "test"
+    ]
+  },
   "context": {
-    "@aws-cdk/core:enableStackNameDuplicates": "false",
-    "aws-cdk:enableDiffNoFail": "true",
-    "@aws-cdk/core:stackRelativeExports": "true",
+    "@aws-cdk/core:stackRelativeExports": true,
+    "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
     "staging": {
       "WafWebAclArn": "arn:aws:wafv2:us-east-1:770668172371:global/webacl/Waf-CloudFront/db089690-848e-47c2-9697-dee59f39cd6d",
       "IPWhiteList": [
