@@ -1,0 +1,30 @@
+name: deployment
+
+on:
+  push:
+    branches:
+      - unbind-from-cdk-spa-deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Pull repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        # working-directory: ./application
+        run: yarn install
+
+      - name: Assume deployer role
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::770668172371:role/InfraStack-applicationDeployerRole4518AA36-1F6D68L5JU22Y
+          aws-region: ca-central-1
+
+      - name: Deploy the application
+        # working-directory: ./application
+        run: npm run deploy:cicd

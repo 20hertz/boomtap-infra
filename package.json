@@ -7,14 +7,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:firewall": "cdk deploy FirewallStack -c config=staging --profile boomtap-dev",
-    "destroy:firewall": "cdk destroy FirewallStack -c config=staging --profile boomtap-dev",
-    "deploy:staging": "cdk deploy FrontEndStackStaging -c config=staging --profile boomtap-dev",
-    "destroy:staging": "cdk destroy FrontEndStackStaging -c config=staging --profile boomtap-dev",
-    "deploy:landingpage:staging": "cdk deploy LandingPageStack -c config=staging --profile boomtap-dev",
-    "destroy:landingpage:staging": "cdk destroy LandingPageStack -c config=staging --profile boomtap-dev",
-    "deploy:prod": "cdk deploy FrontEndStackProd -c config=prod --profile boomtap-dev",
-    "destroy:prod": "cdk destroy FrontEndStackProd -c config=prod --profile boomtap-dev"
+    "deploy": "yarn cdk deploy LandingPageStack --require-approval never"
   },
   "devDependencies": {
     "@aws-cdk/assert": "2.2.0",
