@@ -2,6 +2,7 @@ import { aws_iam, CfnOutput, Stack, StackProps, Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import {
   OpenIdConnectPrincipal,
+  OpenIdConnectProvider,
   Role,
   PolicyDocument,
   PolicyStatement,
@@ -16,7 +17,7 @@ export class InfraStack extends Stack {
      * Create an Identity provider for GitHub inside your AWS Account. This
      * allows GitHub to present itself to AWS IAM and assume a role.
      */
-    const gitHubOIDCProvider = new aws_iam.OpenIdConnectProvider(
+    const gitHubOIDCProvider = new OpenIdConnectProvider(
       this,
       "GitHubOIDCProvider",
       {
@@ -26,7 +27,8 @@ export class InfraStack extends Stack {
     );
 
     const githubUsername = "20hertz";
-    const gitHubRepoName = "boomtap-infra";
+    const githubRepoName = "boomtap-infra";
+    const githubBranchName = "unbind-from-cdk-spa-deploy";
     /**
      * Create a principal for the OpenID; which can allow it to assume
      * deployment roles.
@@ -35,7 +37,7 @@ export class InfraStack extends Stack {
       gitHubOIDCProvider
     ).withConditions({
       StringLike: {
-        "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${gitHubRepoName}:*`,
+        "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${githubRepoName}:ref:refs/heads/${githubBranchName}`,
       },
     });
 
@@ -59,7 +61,7 @@ export class InfraStack extends Stack {
             new PolicyStatement({
               effect: Effect.ALLOW,
               actions: ["sts:AssumeRole"],
-              resources: [`arn:aws:iam::925901147548:role/cdk-*`],
+              resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
             }),
           ],
         }),
