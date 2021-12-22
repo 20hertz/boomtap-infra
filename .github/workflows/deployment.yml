@@ -5,10 +5,6 @@ on:
     branches:
       - unbind-from-cdk-spa-deploy
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
