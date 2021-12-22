@@ -210,7 +210,8 @@ Resources:
           - Action: sts:AssumeRole
             Effect: Allow
             Principal:
-              AWS: arn:aws:iam::770668172371:role/InfraStack-applicationDeployerRole4518AA36-1F6D68L5JU22Y
+              AWS:
+                Ref: AWS::AccountId
           - Fn::If:
               - HasTrustedAccounts
               - Action: sts:AssumeRole
@@ -501,3 +502,4 @@ Outputs:
       Fn::GetAtt:
         - CdkBootstrapVersion
         - Value
+

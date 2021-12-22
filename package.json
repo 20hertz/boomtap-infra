@@ -8,7 +8,9 @@
     "test": "jest",
     "cdk": "cdk",
     "deploy:infra": "yarn cdk deploy InfraStack --require-approval never",
-    "destroy:infra": "yarn cdk destroy InfraStack --require-approval never"
+    "destroy:infra": "yarn cdk destroy InfraStack --require-approval never",
+    "get-bootstrap-template": "yarn cdk bootstrap -- --qualifier application --get-template > ./bootstrap-template.yaml",
+    "bootstrap": "yarn cdk bootstrap -- --qualifier application --template bootstrap-template.yaml"
   },
   "devDependencies": {
     "@aws-cdk/assert": "2.2.0",

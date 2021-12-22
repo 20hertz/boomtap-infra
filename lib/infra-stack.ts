@@ -7,6 +7,7 @@ import {
   PolicyDocument,
   PolicyStatement,
   Effect,
+  WebIdentityPrincipal,
 } from "aws-cdk-lib/aws-iam";
 
 export class InfraStack extends Stack {
@@ -33,12 +34,29 @@ export class InfraStack extends Stack {
      * Create a principal for the OpenID; which can allow it to assume
      * deployment roles.
      */
-    const gitHubPrincipal = new OpenIdConnectPrincipal(
-      gitHubOIDCProvider
-    ).withConditions({
-      StringLike: {
-        "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${githubRepoName}:ref:refs/heads/${githubBranchName}`,
-      },
+    // const gitHubPrincipal = new OpenIdConnectPrincipal(
+    //   gitHubOIDCProvider
+    // ).withConditions({
+    //   StringLike: {
+    //     "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${githubRepoName}:ref:refs/heads/${githubBranchName}`,
+    //   },
+    // });
+
+    const applicationDeployerRole = new Role(this, "applicationDeployerRole", {
+      assumedBy: new WebIdentityPrincipal(
+        gitHubOIDCProvider.openIdConnectProviderArn,
+        {
+          StringLike: {
+            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${githubRepoName}:ref:refs/heads/${githubBranchName}`,
+          },
+        }
+      ),
+      // Has to be defined, otherwise the deployment fails.
+      inlinePolicies: {},
+    });
+
+    new CfnOutput(this, "applicationDeployerRoleArn", {
+      value: applicationDeployerRole.roleArn,
     });
 
     /**
@@ -48,24 +66,24 @@ export class InfraStack extends Stack {
      * This role is granted authority to assume aws cdk roles; which are created
      * by the aws cdk v2.
      */
-    new Role(this, "GitHubActionsRole", {
-      assumedBy: gitHubPrincipal,
-      description:
-        "Role assumed by GitHubPrincipal for deploying from CI using aws cdk",
-      roleName: "github-ci-role",
-      maxSessionDuration: Duration.hours(1),
-      inlinePolicies: {
-        CdkDeploymentPolicy: new PolicyDocument({
-          assignSids: true,
-          statements: [
-            new PolicyStatement({
-              effect: Effect.ALLOW,
-              actions: ["sts:AssumeRole"],
-              resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
-            }),
-          ],
-        }),
-      },
-    });
+    // new Role(this, "GitHubActionsRole", {
+    //   assumedBy: gitHubPrincipal,
+    //   description:
+    //     "Role assumed by GitHubPrincipal for deploying from CI using aws cdk",
+    //   roleName: "github-ci-role",
+    //   maxSessionDuration: Duration.hours(1),
+    //   inlinePolicies: {
+    //     CdkDeploymentPolicy: new PolicyDocument({
+    //       assignSids: true,
+    //       statements: [
+    //         new PolicyStatement({
+    //           effect: Effect.ALLOW,
+    //           actions: ["sts:AssumeRole"],
+    //           resources: [`arn:aws:iam::${this.account}:role/*`],
+    //         }),
+    //       ],
+    //     }),
+    //   },
+    // });
   }
 }

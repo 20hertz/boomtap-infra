@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import * as cdk from "aws-cdk-lib";
+import { App, DefaultStackSynthesizer } from "aws-cdk-lib";
 import { LandingPageStack } from "../lib/landingpage-stack";
 import { InfraStack } from "../lib/infra-stack";
 
-const app = new cdk.App();
+const app = new App();
 
 new InfraStack(app, "InfraStack", {
   env: {
@@ -17,4 +17,8 @@ new LandingPageStack(app, "LandingPageStack", {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
+  synthesizer: new DefaultStackSynthesizer({
+    // Specified at the bootstrap time. Checkout package.json "bootstrap" script.
+    qualifier: "app",
+  }),
 });

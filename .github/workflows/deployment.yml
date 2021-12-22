@@ -12,6 +12,9 @@ permissions:
 jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v2
@@ -19,7 +22,7 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::770668172371:role/github-ci-role
+          role-to-assume: arn:aws:iam::770668172371:role/InfraStack-applicationDeployerRole4518AA36-H8YT3ZQ6AIN1
           aws-region: ca-central-1
 
       - uses: actions/setup-node@v2
@@ -28,8 +31,8 @@ jobs:
 
       - run: yarn install
 
-      - name: Synth infrastructure stack
-        run: yarn cdk synth LandingPageStack
+      # - name: Synth infrastructure stack
+      #   run: yarn cdk synth LandingPageStack
 
       - name: Deploy infrastructure stack
         run: yarn cdk deploy LandingPageStack --require-approval never
