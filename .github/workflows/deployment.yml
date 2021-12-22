@@ -31,7 +31,7 @@ jobs:
       - run: yarn install
 
       - name: Synth infrastructure stack
-        run: yarn cdk synth
+        run: yarn cdk synth LandingPageStack
 
       - name: Deploy infrastructure stack
-        run: yarn cdk deploy --require-approval never
+        run: yarn cdk deploy LandingPageStack --require-approval never
