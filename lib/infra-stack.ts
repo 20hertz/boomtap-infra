@@ -42,6 +42,13 @@ export class InfraStack extends Stack {
     //   },
     // });
 
+    /**
+     * Create a deployment role that has short lived credentials. The only
+     * principal that can assume this role is the GitHub Open ID provider.
+     *
+     * This role is granted authority to assume aws cdk roles; which are created
+     * by the aws cdk v2.
+     */
     const applicationDeployerRole = new Role(this, "applicationDeployerRole", {
       assumedBy: new WebIdentityPrincipal(
         gitHubOIDCProvider.openIdConnectProviderArn,
@@ -51,8 +58,18 @@ export class InfraStack extends Stack {
           },
         }
       ),
-      // Has to be defined, otherwise the deployment fails.
-      inlinePolicies: {},
+      inlinePolicies: {
+        CdkDeploymentPolicy: new PolicyDocument({
+          assignSids: true,
+          statements: [
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              actions: ["sts:AssumeRole"],
+              resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
+            }),
+          ],
+        }),
+      },
     });
 
     new CfnOutput(this, "applicationDeployerRoleArn", {

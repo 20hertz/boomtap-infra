@@ -15,18 +15,18 @@ jobs:
       - name: Git clone the repository
         uses: actions/checkout@v2
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          role-to-assume: arn:aws:iam::770668172371:role/InfraStack-applicationDeployerRole4518AA36-H8YT3ZQ6AIN1
-          aws-region: ca-central-1
+      # - name: configure aws credentials
+      #   uses: aws-actions/configure-aws-credentials@master
+      #   with:
+      #     role-to-assume: arn:aws:iam::770668172371:role/InfraStack-applicationDeployerRole4518AA36-H8YT3ZQ6AIN1
+      #     aws-region: ca-central-1
 
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "16"
+      # - uses: actions/setup-node@v2
+      #   with:
+      #     node-version: "16"
 
-      - name: Install dependencies
-        run: yarn install
+      # - name: Install dependencies
+      #   run: yarn install
 
-      - name: Deploy infrastructure stack
-        run: yarn cdk deploy LandingPageStack --require-approval never
+      # - name: Deploy infrastructure stack
+      #   run: yarn cdk deploy LandingPageStack --require-approval never
