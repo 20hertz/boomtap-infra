@@ -25,10 +25,8 @@ jobs:
         with:
           node-version: "16"
 
-      - run: yarn install
-
-      # - name: Synth infrastructure stack
-      #   run: yarn cdk synth LandingPageStack
+      - name: Install dependencies
+        run: yarn install
 
       - name: Deploy infrastructure stack
         run: yarn cdk deploy LandingPageStack --require-approval never
