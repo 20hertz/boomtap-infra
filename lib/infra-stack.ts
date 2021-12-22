@@ -18,25 +18,24 @@ export class InfraStack extends Stack {
      */
     const gitHubOIDCProvider = new aws_iam.OpenIdConnectProvider(
       this,
-      "gitHubOIDCProvider",
+      "GitHubOIDCProvider",
       {
         url: "https://token.actions.githubusercontent.com",
         clientIds: ["sts.amazonaws.com"],
       }
     );
 
-    const githubOrganisation = "20hertz";
-    // Change this to the repo you want to push code from
-    const repoName = "boomtap-infra";
+    const githubUsername = "20hertz";
+    const gitHubRepoName = "boomtap-infra";
     /**
      * Create a principal for the OpenID; which can allow it to assume
      * deployment roles.
      */
-    const GitHubPrincipal = new OpenIdConnectPrincipal(
+    const gitHubPrincipal = new OpenIdConnectPrincipal(
       gitHubOIDCProvider
     ).withConditions({
       StringLike: {
-        "token.actions.githubusercontent.com:sub": `repo:${githubOrganisation}/${repoName}:*`,
+        "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${gitHubRepoName}:*`,
       },
     });
 
@@ -48,7 +47,7 @@ export class InfraStack extends Stack {
      * by the aws cdk v2.
      */
     new Role(this, "GitHubActionsRole", {
-      assumedBy: GitHubPrincipal,
+      assumedBy: gitHubPrincipal,
       description:
         "Role assumed by GitHubPrincipal for deploying from CI using aws cdk",
       roleName: "github-ci-role",
@@ -60,48 +59,11 @@ export class InfraStack extends Stack {
             new PolicyStatement({
               effect: Effect.ALLOW,
               actions: ["sts:AssumeRole"],
-              resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
+              resources: [`arn:aws:iam::925901147548:role/cdk-*`],
             }),
           ],
         }),
       },
     });
-
-    /**
-     * Amend those to your needs.
-     */
-    // const gitHubUsername = " 20hertz";
-    // const gitHubRepoName = "boomtap-infra";
-    // const gitHubBranchName = "main";
-
-    // const applicationDeployerRole = new aws_iam.Role(
-    //   this,
-    //   "applicationDeployerRole",
-    //   {
-    //     assumedBy: new aws_iam.WebIdentityPrincipal(
-    //       gitHubOIDCProvider.openIdConnectProviderArn,
-    //       {
-    //         StringLike: {
-    //           "token.actions.githubusercontent.com:sub": `repo:${gitHubUsername}/${gitHubRepoName}:ref:refs/heads/${gitHubBranchName}`,
-    //         },
-    //       }
-    //     ),
-    //     inlinePolicies: {
-    //       allowAssumeOnAccountB: new aws_iam.PolicyDocument({
-    //         statements: [
-    //           new aws_iam.PolicyStatement({
-    //             effect: aws_iam.Effect.ALLOW,
-    //             actions: ["sts:AssumeRole"],
-    //             resources: ["arn:aws:iam::925901147548:role/*"],
-    //           }),
-    //         ],
-    //       }),
-    //     },
-    //   }
-    // );
-
-    // new CfnOutput(this, "applicationDeployerRoleArn", {
-    //   value: applicationDeployerRole.roleArn,
-    // });
   }
 }
