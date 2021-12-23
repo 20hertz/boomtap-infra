@@ -29,17 +29,6 @@ export class BootstrapStack extends Stack {
     const githubUsername = "20hertz";
     const githubRepoName = "boomtap-infra";
     const githubBranchName = "unbind-from-cdk-spa-deploy";
-    /**
-     * Create a principal for the OpenID; which can allow it to assume
-     * deployment roles.
-     */
-    // const gitHubPrincipal = new OpenIdConnectPrincipal(
-    //   gitHubOIDCProvider
-    // ).withConditions({
-    //   StringLike: {
-    //     "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${githubRepoName}:ref:refs/heads/${githubBranchName}`,
-    //   },
-    // });
 
     /**
      * Create a deployment role that has short lived credentials. The only
