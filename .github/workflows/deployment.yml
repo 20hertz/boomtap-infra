@@ -27,6 +27,8 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+        working-directory: ./infrastructure
 
       - name: Deploy infrastructure stack
         run: yarn cdk deploy LandingPageStack --require-approval never
+        working-directory: ./infrastructure
