@@ -7,9 +7,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:infra": "yarn cdk deploy InfraStack --require-approval never",
-    "destroy:infra": "yarn cdk destroy InfraStack --require-approval never",
-    "bootstrap": "yarn cdk bootstrap --qualifier bootstrap"
+    "deploy:staging": "cdk deploy --profile backstage",
+    "bootstrap:staging": "cdk bootstrap --qualifier bootstrap --profile backstage"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",

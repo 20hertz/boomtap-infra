@@ -10,6 +10,7 @@ export class LandingPageStack extends Stack {
 
     const siteBucket = new s3.Bucket(this, "SiteBucket", {
       autoDeleteObjects: true,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       publicReadAccess: false,
       removalPolicy: RemovalPolicy.DESTROY,
       websiteIndexDocument: "index.html",
