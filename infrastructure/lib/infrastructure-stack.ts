@@ -1,19 +1,25 @@
-import { Duration, Stack, StackProps } from 'aws-cdk-lib';
-import * as sns from 'aws-cdk-lib/aws-sns';
-import * as subs from 'aws-cdk-lib/aws-sns-subscriptions';
-import * as sqs from 'aws-cdk-lib/aws-sqs';
-import { Construct } from 'constructs';
+import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+import * as s3 from "aws-cdk-lib/aws-s3";
+import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
+import { Construct } from "constructs";
+import * as path from "path";
 
-export class InfrastructureStack extends Stack {
+export class LandingPageStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const queue = new sqs.Queue(this, 'InfrastructureQueue', {
-      visibilityTimeout: Duration.seconds(300)
+    const siteBucket = new s3.Bucket(this, "SiteBucket", {
+      autoDeleteObjects: true,
+      publicReadAccess: false,
+      removalPolicy: RemovalPolicy.DESTROY,
+      websiteIndexDocument: "index.html",
     });
 
-    const topic = new sns.Topic(this, 'InfrastructureTopic');
-
-    topic.addSubscription(new subs.SqsSubscription(queue));
+    new s3deploy.BucketDeployment(this, "CdkDeploymentBucket", {
+      sources: [
+        s3deploy.Source.asset(path.join(__dirname, "..", "placeholder")),
+      ],
+      destinationBucket: siteBucket,
+    });
   }
 }

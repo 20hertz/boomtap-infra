@@ -6,7 +6,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "bootstrap": "yarn cdk bootstrap --qualifier infra"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
