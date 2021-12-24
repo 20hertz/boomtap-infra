@@ -8,6 +8,7 @@
     "test": "jest",
     "cdk": "cdk",
     "deploy:staging": "cdk deploy --profile backstage",
+    "destroy:staging": "cdk destroy --profile backstage",
     "bootstrap:staging": "cdk bootstrap --qualifier bootstrap --profile backstage"
   },
   "devDependencies": {

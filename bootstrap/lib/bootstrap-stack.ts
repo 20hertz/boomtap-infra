@@ -52,7 +52,7 @@ export class BootstrapStack extends Stack {
           statements: [
             new PolicyStatement({
               effect: Effect.ALLOW,
-              actions: ["sts:AssumeRole"],
+              actions: ["sts:AssumeRole", "route53:GetHostedZone"],
               resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
             }),
           ],
@@ -62,6 +62,8 @@ export class BootstrapStack extends Stack {
 
     new CfnOutput(this, "applicationDeployerRoleArn", {
       value: applicationDeployerRole.roleArn,
+      description:
+        "Copy-paste this ARN next to role-to-assume in the deployment workflow",
     });
   }
 }
