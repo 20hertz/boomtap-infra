@@ -22,5 +22,5 @@ You need:
 
 ### References
 
-- https://dev.to/simonireilly/secure-aws-cdk-deployments-with-github-actions-3jfk
 - https://dev.to/aws-builders/deploying-aws-cdk-apps-using-short-lived-credentials-and-github-actions-59g6
+- https://dev.to/simonireilly/secure-aws-cdk-deployments-with-github-actions-3jfk

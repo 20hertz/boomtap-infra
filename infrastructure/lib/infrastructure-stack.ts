@@ -12,10 +12,19 @@ export class LandingPageStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const zone = route53.HostedZone.fromHostedZoneId(
+    // const zone = route53.HostedZone.fromHostedZoneId(
+    //   this,
+    //   "HostedZone",
+    //   "Z1YYKQHTVYJ8LZ"
+    // );
+
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
       this,
       "HostedZone",
-      "Z1YYKQHTVYJ8LZ"
+      {
+        zoneName: "boomtap.io",
+        hostedZoneId: "Z1YYKQHTVYJ8LZ",
+      }
     );
 
     const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
@@ -65,7 +74,7 @@ export class LandingPageStack extends Stack {
       target: route53.RecordTarget.fromAlias(
         new targets.CloudFrontTarget(distribution)
       ),
-      zone,
+      zone: hostedZone,
     });
 
     new s3deploy.BucketDeployment(this, "CdkDeploymentBucket", {
