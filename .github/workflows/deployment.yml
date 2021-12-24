@@ -8,10 +8,9 @@ on:
 jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: infrastructure
-
+    # defaults:
+    #   run:
+    #     working-directory: infrastructure
     permissions:
       id-token: write
       contents: read
@@ -29,12 +28,13 @@ jobs:
         with:
           node-version: "16"
           cache: "yarn"
-          # cache-dependency-path: ./infrastructure/yarn-lock.json
+          cache-dependency-path: ./infrastructure/yarn.lock
 
       # - name: Get yarn cache directory path
       #   id: yarn-cache-dir-path
       #   run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       #   working-directory: ./infrastructure
+
       # - uses: actions/cache@v2
       #   id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
       #   with:
@@ -42,9 +42,12 @@ jobs:
       #     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       #     restore-keys: |
       #       ${{ runner.os }}-yarn-
+
       - name: Install project dependencies
         run: yarn install
         # run: yarn install --prefer-offline
+        working-directory: infrastructure
 
       - name: Deploy infrastructure stack
         run: yarn cdk deploy LandingPageStack --require-approval never
+        working-directory: infrastructure
