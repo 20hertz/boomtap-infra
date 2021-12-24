@@ -12,20 +12,24 @@ export class LandingPageStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // const zone = route53.HostedZone.fromHostedZoneId(
+    const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
+      domainName: "boomtap.io",
+    });
+
+    // const hostedZone = route53.HostedZone.fromHostedZoneId(
     //   this,
     //   "HostedZone",
     //   "Z1YYKQHTVYJ8LZ"
     // );
 
-    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
-      this,
-      "HostedZone",
-      {
-        zoneName: "boomtap.io",
-        hostedZoneId: "Z1YYKQHTVYJ8LZ",
-      }
-    );
+    // const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+    //   this,
+    //   "HostedZone",
+    //   {
+    //     zoneName: "boomtap.io",
+    //     hostedZoneId: "Z1YYKQHTVYJ8LZ",
+    //   }
+    // );
 
     const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
       this,
