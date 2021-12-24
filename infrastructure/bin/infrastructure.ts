@@ -13,7 +13,11 @@ class WebsiteStack extends Stack {
 const app = new App();
 
 new WebsiteStack(app, "WebsiteStack", {
-  env: { region: "ca-central-1", account: "925901147548" },
+  env: {
+    region: "ca-central-1",
+    // account: process.env.CDK_DEFAULT_ACCOUNT,
+    account: "925901147548",
+  },
   synthesizer: new DefaultStackSynthesizer({
     // Specified at the bootstrap time. Checkout package.json "bootstrap" script.
     qualifier: "infra",
