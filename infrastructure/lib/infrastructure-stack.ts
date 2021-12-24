@@ -1,4 +1,6 @@
 import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+import * as route53 from "aws-cdk-lib/aws-route53";
+import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
@@ -9,6 +11,15 @@ import * as iam from "aws-cdk-lib/aws-iam";
 export class LandingPageStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+
+    const zone = route53.HostedZone.fromHostedZoneAttributes(
+      this,
+      "HostedZone",
+      {
+        zoneName: "boomtap.io",
+        hostedZoneId: "Z1YYKQHTVYJ8LZ",
+      }
+    );
 
     const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
       this,
@@ -51,6 +62,14 @@ export class LandingPageStack extends Stack {
         ],
       }
     );
+
+    new route53.ARecord(this, "SiteAliasRecord", {
+      recordName: "backstage.feed.boomtap.io",
+      target: route53.RecordTarget.fromAlias(
+        new targets.CloudFrontTarget(distribution)
+      ),
+      zone,
+    });
 
     new s3deploy.BucketDeployment(this, "CdkDeploymentBucket", {
       sources: [
