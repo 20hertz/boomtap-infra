@@ -12,13 +12,10 @@ export class LandingPageStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const zone = route53.HostedZone.fromHostedZoneAttributes(
+    const zone = route53.HostedZone.fromHostedZoneId(
       this,
       "HostedZone",
-      {
-        zoneName: "boomtap.io",
-        hostedZoneId: "Z1YYKQHTVYJ8LZ",
-      }
+      "Z1YYKQHTVYJ8LZ"
     );
 
     const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
