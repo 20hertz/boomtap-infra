@@ -8,9 +8,9 @@ import * as path from "path";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as iam from "aws-cdk-lib/aws-iam";
 
-export class LandingPageStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
-    super(scope, id, props);
+export class WebsiteStackConstruct extends Construct {
+  constructor(scope: Stack, name: string) {
+    super(scope, name);
 
     const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
       domainName: "boomtap.io",
@@ -34,7 +34,7 @@ export class LandingPageStack extends Stack {
     const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
       this,
       "OriginAccessIdentity",
-      { comment: `OAI for ${id}` }
+      { comment: `OAI for ${name}` }
     );
 
     const sourceBucket = new s3.Bucket(this, "SiteBucket", {

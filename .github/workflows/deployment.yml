@@ -35,9 +35,9 @@ jobs:
         working-directory: infrastructure
 
       - name: Synth infrastructure stack
-        run: yarn cdk synth LandingPageStack
+        run: yarn cdk synth
         working-directory: infrastructure
 
       - name: Deploy infrastructure stack
-        run: yarn cdk deploy LandingPageStack --require-approval never
+        run: yarn cdk deploy --require-approval never
         working-directory: infrastructure
