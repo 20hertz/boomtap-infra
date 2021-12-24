@@ -1,23 +1,42 @@
 import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
-import { Bucket, BlockPublicAccess } from "aws-cdk-lib/aws-s3";
+import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 import * as path from "path";
-import { CloudFrontWebDistribution } from "aws-cdk-lib/aws-cloudfront";
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export class LandingPageStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const sourceBucket = new Bucket(this, "SiteBucket", {
+    const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
+      this,
+      "OriginAccessIdentity",
+      { comment: `OAI for ${id}` }
+    );
+
+    const sourceBucket = new s3.Bucket(this, "SiteBucket", {
       autoDeleteObjects: true,
-      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       publicReadAccess: false,
       removalPolicy: RemovalPolicy.DESTROY,
       websiteIndexDocument: "index.html",
     });
 
-    const distribution = new CloudFrontWebDistribution(
+    sourceBucket.addToResourcePolicy(
+      new iam.PolicyStatement({
+        actions: ["s3:GetObject"],
+        resources: [sourceBucket.arnForObjects("*")],
+        principals: [
+          new iam.CanonicalUserPrincipal(
+            cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId
+          ),
+        ],
+      })
+    );
+
+    const distribution = new cloudfront.CloudFrontWebDistribution(
       this,
       "CloudFrontDistribution",
       {
@@ -25,6 +44,7 @@ export class LandingPageStack extends Stack {
           {
             s3OriginSource: {
               s3BucketSource: sourceBucket,
+              originAccessIdentity: cloudfrontOAI,
             },
             behaviors: [{ isDefaultBehavior: true }],
           },
