@@ -13,10 +13,11 @@ export class WebsiteStackConstruct extends Construct {
   constructor(scope: Stack, name: string) {
     super(scope, name);
 
+    const siteDomain = "backstage.feed.boomtap.io";
+
     const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
-      domainName: "feed-backstage.boomtap.io",
+      domainName: siteDomain,
     });
-    const siteDomain = "feed-backstage" + "." + "boomtap.io";
 
     // const hostedZone = route53.HostedZone.fromHostedZoneId(
     //   this,
