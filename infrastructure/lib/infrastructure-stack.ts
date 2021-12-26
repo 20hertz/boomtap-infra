@@ -19,21 +19,6 @@ export class WebsiteStackConstruct extends Construct {
       domainName: siteDomain,
     });
 
-    // const hostedZone = route53.HostedZone.fromHostedZoneId(
-    //   this,
-    //   "HostedZone",
-    //   "Z1YYKQHTVYJ8LZ"
-    // );
-
-    // const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
-    //   this,
-    //   "HostedZone",
-    //   {
-    //     zoneName: "boomtap.io",
-    //     hostedZoneId: "Z1YYKQHTVYJ8LZ",
-    //   }
-    // );
-
     const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
       this,
       "OriginAccessIdentity",
