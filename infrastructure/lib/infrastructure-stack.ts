@@ -14,7 +14,7 @@ export class WebsiteStackConstruct extends Construct {
     super(scope, name);
 
     const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
-      domainName: "boomtap.io",
+      domainName: "feed-backstage.boomtap.io",
     });
     const siteDomain = "feed-backstage" + "." + "boomtap.io";
 
