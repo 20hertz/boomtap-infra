@@ -21,7 +21,7 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::925901147548:role/BootstrapStack-applicationDeployerRole4518AA36-1MZI4RYQL0R2X
+          role-to-assume: arn:aws:iam::925901147548:role/BootstrapStack-applicationDeployerRole4518AA36-12WS6TNBANY6T
           aws-region: ca-central-1
 
       - uses: actions/setup-node@v2
@@ -32,12 +32,9 @@ jobs:
 
       - name: Install project dependencies
         run: yarn install
-        # working-directory: infrastructure
 
       - name: Synth infrastructure stack
         run: yarn cdk synth
-        # working-directory: infrastructure
 
       - name: Deploy infrastructure stack
         run: yarn cdk deploy --require-approval never
-        # working-directory: infrastructure

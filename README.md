@@ -31,8 +31,9 @@ Easiest way is using CLI's [create-account](https://docs.aws.amazon.com/cli/late
 ### 2. Create an IAM user
 
 - In the console, switch to the new account
+- Create a Deployer policy (see examples in existing accounts)
 - Create an IAM user with programmatic access only
-- Give this user the Deployer permissions (see examples in existing accounts)
+- Give this user the Deployer permissions
 
 ### 3. Delegate domains across AWS accounts
 
