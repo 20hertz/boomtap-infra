@@ -21,7 +21,8 @@
     "@aws-cdk/aws-lambda:recognizeVersionProps": true,
     "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
     "staging": {
-      "AccountID": "925901147548"
+      "AccountID": "925901147548",
+      "Subdomain": "backstage"
     }
   }
 }

@@ -1,16 +1,22 @@
 #!/usr/bin/env node
 import { App, DefaultStackSynthesizer, Stack, StackProps } from "aws-cdk-lib";
-import { WebsiteStackConstruct } from "../lib/infrastructure-stack";
+import { SpaConstruct } from "../lib/spa-construct";
 
 interface Config {
-  readonly AccountID: string;
+  readonly accountID: string;
+  readonly subdomain: string;
 }
 
-class WebsiteStack extends Stack {
-  constructor(parent: App, name: string, props: StackProps) {
+export class SpaStack extends Stack {
+  constructor(
+    parent: App,
+    name: string,
+    props: StackProps,
+    subdomain?: string
+  ) {
     super(parent, name, props);
 
-    new WebsiteStackConstruct(this, "LandingPageStack");
+    new SpaConstruct(this, "SpaStack", { subdomain });
   }
 }
 
@@ -25,19 +31,25 @@ const getConfig = (): Config => {
     );
 
   return {
-    AccountID: app.node.tryGetContext(env)["AccountID"],
+    accountID: app.node.tryGetContext(env)["AccountID"],
+    subdomain: app.node.tryGetContext(env)["subdomain"],
   };
 };
 
 const config = getConfig();
 
-new WebsiteStack(app, "WebsiteStack", {
-  env: {
-    region: "ca-central-1",
-    account: config.AccountID,
+new SpaStack(
+  app,
+  "LandingPageStack",
+  {
+    env: {
+      region: "ca-central-1",
+      account: config.accountID,
+    },
+    synthesizer: new DefaultStackSynthesizer({
+      // Specified at the bootstrap time. Checkout package.json "bootstrap" script.
+      qualifier: "feedform",
+    }),
   },
-  synthesizer: new DefaultStackSynthesizer({
-    // Specified at the bootstrap time. Checkout package.json "bootstrap" script.
-    qualifier: "infra",
-  }),
-});
+  `${config.subdomain}.feed`
+);

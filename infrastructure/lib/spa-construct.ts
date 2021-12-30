@@ -1,4 +1,4 @@
-import { Aws, RemovalPolicy, Stack, CfnOutput } from "aws-cdk-lib";
+import { RemovalPolicy, Stack } from "aws-cdk-lib";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
@@ -9,11 +9,17 @@ import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
 
-export class WebsiteStackConstruct extends Construct {
-  constructor(scope: Stack, name: string) {
+interface SpaConstructProps {
+  subdomain?: string;
+}
+
+export class SpaConstruct extends Construct {
+  constructor(scope: Stack, name: string, props: SpaConstructProps) {
     super(scope, name);
 
-    const siteDomain = "backstage.feed.boomtap.io";
+    const siteDomain = props.subdomain
+      ? props.subdomain + ".boomtap.io"
+      : "boomtap.io";
 
     const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
       domainName: siteDomain,

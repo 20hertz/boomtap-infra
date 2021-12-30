@@ -18,22 +18,28 @@ You need:
 
 ## Spinning up a new environment
 
-There are still a few steps that needs to be done manually:
+There are a few steps that needs to be done manually for this:
 
 ### 1. Create an AWS account that is member of the organization
 
 Easiest way is using CLI's [create-account](https://docs.aws.amazon.com/cli/latest/reference/organizations/create-account.html) command
 
 ```
-% aws create-account --email <value> --account-name <value>
+% aws create-account --email <value> --account-name <ENVIRONMENT_NAME>
 ```
 
-### 2. Create an IAM user
+### 2. Grant permissions to the Deployer user
 
-- In the console, switch to the new account
-- Create a Deployer policy (see examples in existing accounts)
-- Create an IAM user with programmatic access only
-- Give this user the Deployer permissions
+- In the console, create policy:
+
+  - Service: STS
+  - Actions: AssumeRole
+  - Resources: Specific, then choose Add ARN
+    - Account ID: account ID of the new account
+    - Role name: _OrganizationAccountAccessRole_
+  - In review step, name that policy _GrantAccessToOrganizationAccountAccessRole_
+
+- Attach this policy to the Deployer IAM user
 
 ### 3. Delegate domains across AWS accounts
 
