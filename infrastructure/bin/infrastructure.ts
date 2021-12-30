@@ -32,7 +32,7 @@ const getConfig = (): Config => {
 
   return {
     accountID: app.node.tryGetContext(env)["AccountID"],
-    subdomain: app.node.tryGetContext(env)["subdomain"],
+    subdomain: app.node.tryGetContext(env)["Subdomain"],
   };
 };
 
