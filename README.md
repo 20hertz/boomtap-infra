@@ -28,20 +28,45 @@ Easiest way is using CLI's [create-account](https://docs.aws.amazon.com/cli/late
 % aws create-account --email <value> --account-name <ENVIRONMENT_NAME>
 ```
 
-### 2. Grant permissions to the Deployer user
+### 2. Create a policy to allow deployment through CDK
 
-- In the console, create policy:
+- In console, switch to the new account
+- Create a policy named _DeploymentRights_ and copy over the JSON from other accounts
+
+### 3. Create a Deployer role
+
+- Create a role with a trusted entity type of _Another AWS account_
+- Enter the ID of the main account
+- Attach _DeploymentRights_ permissions
+- Name role _DeployerRole_
+
+### 4. Grant permissions to the Deployer user
+
+- Switch back to the main account
+- Create a policy:
 
   - Service: STS
   - Actions: AssumeRole
   - Resources: Specific, then choose Add ARN
     - Account ID: account ID of the new account
-    - Role name: _OrganizationAccountAccessRole_
-  - In review step, name that policy _GrantAccessToOrganizationAccountAccessRole_
+    - Role name: _DeployerRole_
+  - In review step, name that policy _GrantAccessToBoomtapDeployerRole_
 
-- Attach this policy to the Deployer IAM user
+- Attach this policy to the IAM user responsible of deployment
 
-### 3. Delegate domains across AWS accounts
+### 5. Define role profile in CLI config
+
+- In ~/.aws/config, add a profile
+  as such:
+
+```
+[profile <NAME_OF_PROFILE>]
+role_arn = arn:aws:iam::<NEW_ACCOUNT_ID>:role/DeployerRole
+source_profile = default (or any profile whose credentials have the DeployerRole)
+region = <REGION>
+```
+
+### 6. Delegate domains across AWS accounts
 
 - Go into Route 53 console in the new account.
 - Create a hosted zone
@@ -58,13 +83,13 @@ Easiest way is using CLI's [create-account](https://docs.aws.amazon.com/cli/late
 
 Now we’ve delegated the <subdomain> of <domain_apex> to our new AWS account
 
-### 4. Go to Deploy Bootstrap stack
+### 7. Go to Deploy Bootstrap stack
 
 - bootstrap the stack with the --profile <PROFILE_OF_USER_CREATED_ABOVE>
 - deploy the stack
 - Copy the ARN for the applicationDeployerRole
 
-### 5. Go to Infrastructure stack
+### 8. Go to Infrastructure stack
 
 - paste the ARN next to _role-to-assume_ in the github workflow
 - bootstrap the stack

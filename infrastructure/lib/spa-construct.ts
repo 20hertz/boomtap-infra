@@ -1,5 +1,6 @@
 import { RemovalPolicy, Stack } from "aws-cdk-lib";
 import * as route53 from "aws-cdk-lib/aws-route53";
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
 import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
@@ -8,6 +9,8 @@ import * as path from "path";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
+import { CfnIndex } from "aws-cdk-lib/aws-kendra";
+import { Code, Runtime } from "aws-cdk-lib/aws-lambda";
 
 interface SpaConstructProps {
   subdomain?: string;
@@ -62,6 +65,14 @@ export class SpaConstruct extends Construct {
       }
     );
 
+    // certificate
+    //   .metricDaysToExpiry()
+    //   .createAlarm(this, "CertificateExpiryAlarm", {
+    //     comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+    //     evaluationPeriods: 1,
+    //     threshold: 45, // Automatic rotation happens between 60 and 45 days before expiry
+    //   });
+
     // new CfnOutput(this, "Certificate", { value: certificateArn });
 
     // Specifies you want viewers to use HTTPS & TLS v1.1 to request your objects
@@ -88,6 +99,17 @@ export class SpaConstruct extends Construct {
       }
     );
 
+    const edgeAuth = new cloudfront.experimental.EdgeFunction(
+      this,
+      "EdgeAuthFn",
+      {
+        handler: "index.handler",
+        runtime: Runtime.NODEJS_14_X,
+        code: Code.fromAsset(`${__dirname}/../functions`),
+        memorySize: 128,
+      }
+    );
+
     const distribution = new cloudfront.CloudFrontWebDistribution(
       this,
       "CloudFrontDistribution",
@@ -99,7 +121,19 @@ export class SpaConstruct extends Construct {
               s3BucketSource: sourceBucket,
               originAccessIdentity: cloudfrontOAI,
             },
-            behaviors: [{ isDefaultBehavior: true }],
+            behaviors: [
+              // { isDefaultBehavior: true },
+              {
+                lambdaFunctionAssociations: [
+                  {
+                    lambdaFunction: edgeAuth.currentVersion,
+                    eventType: cloudfront.LambdaEdgeEventType.VIEWER_REQUEST,
+                  },
+                ],
+                isDefaultBehavior: true,
+                // allowedMethods: cloudfront.CloudFrontAllowedMethods.ALL,
+              },
+            ],
           },
         ],
       }
