@@ -36,6 +36,9 @@ jobs:
       - name: Install project dependencies
         run: yarn install
 
+      - name: Transpile lambda functions to JS
+        run: yarn build lambdas/index.ts
+
       - name: Synth infrastructure stack
         run: yarn cdk synth --context config=staging  --all
 

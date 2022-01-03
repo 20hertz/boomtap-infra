@@ -10,6 +10,7 @@
     "bootstrap:staging": "yarn cdk bootstrap --qualifier feedform --profile backstage -c config=staging"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.89",
     "@types/jest": "^27.0.3",
     "@types/node": "10.17.60",
     "aws-cdk": "2.3.0",

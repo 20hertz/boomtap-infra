@@ -9,7 +9,6 @@ import * as path from "path";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
-import { CfnIndex } from "aws-cdk-lib/aws-kendra";
 import { Code, Runtime } from "aws-cdk-lib/aws-lambda";
 
 interface SpaConstructProps {
@@ -93,8 +92,6 @@ export class SpaConstruct extends Construct {
       //     }),
       // },
       {
-        // sslMethod: cloudfront.SSLMethod.SNI,
-        // securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_1_2016,
         aliases: [siteDomain],
       }
     );
@@ -105,7 +102,7 @@ export class SpaConstruct extends Construct {
       {
         handler: "index.handler",
         runtime: Runtime.NODEJS_14_X,
-        code: Code.fromAsset(`${__dirname}/../functions`),
+        code: Code.fromAsset(`${__dirname}/../lambdas`),
         memorySize: 128,
       }
     );
