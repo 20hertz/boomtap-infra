@@ -67,33 +67,8 @@ export class SpaConstruct extends Construct {
       }
     );
 
-    certificate
-      .metricDaysToExpiry()
-      .createAlarm(this, "CertificateExpiryAlarm", {
-        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-        evaluationPeriods: 1,
-        threshold: 45, // Automatic rotation happens between 60 and 45 days before expiry
-      });
-
-    // new CfnOutput(this, "Certificate", { value: certificateArn });
-
-    // Specifies you want viewers to use HTTPS & TLS v1.1 to request your objects
     const viewerCertificate = cloudfront.ViewerCertificate.fromAcmCertificate(
       certificate,
-      // {
-      //   certificateArn: certificateArn,
-      //   env: {
-      //     region: Aws.REGION,
-      //     account: Aws.ACCOUNT_ID,
-      //   },
-      //   node: this.node,
-      //   stack: parent,
-      //   metricDaysToExpiry: () =>
-      //     new cloudwatch.Metric({
-      //       namespace: "TLS Viewer Certificate Validity",
-      //       metricName: "TLS Viewer Certificate Expired",
-      //     }),
-      // },
       {
         aliases: [siteDomain],
       }
