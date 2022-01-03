@@ -9,19 +9,22 @@ import * as path from "path";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
-import { Code, Runtime } from "aws-cdk-lib/aws-lambda";
+import * as lambda from "aws-cdk-lib/aws-lambda";
 
-interface SpaConstructProps {
+interface SpaProps {
   subdomain?: string;
+  httpAuth?: boolean;
 }
 
+const domainApex = "boomtap.io";
+
 export class SpaConstruct extends Construct {
-  constructor(scope: Stack, name: string, props: SpaConstructProps) {
+  constructor(scope: Stack, name: string, props?: SpaProps) {
     super(scope, name);
 
-    const siteDomain = props.subdomain
-      ? props.subdomain + ".boomtap.io"
-      : "boomtap.io";
+    const siteDomain = props?.subdomain
+      ? props.subdomain + "." + domainApex
+      : domainApex;
 
     const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
       domainName: siteDomain,
@@ -64,13 +67,13 @@ export class SpaConstruct extends Construct {
       }
     );
 
-    // certificate
-    //   .metricDaysToExpiry()
-    //   .createAlarm(this, "CertificateExpiryAlarm", {
-    //     comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
-    //     evaluationPeriods: 1,
-    //     threshold: 45, // Automatic rotation happens between 60 and 45 days before expiry
-    //   });
+    certificate
+      .metricDaysToExpiry()
+      .createAlarm(this, "CertificateExpiryAlarm", {
+        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+        evaluationPeriods: 1,
+        threshold: 45, // Automatic rotation happens between 60 and 45 days before expiry
+      });
 
     // new CfnOutput(this, "Certificate", { value: certificateArn });
 
@@ -101,11 +104,24 @@ export class SpaConstruct extends Construct {
       "EdgeAuthFn",
       {
         handler: "index.handler",
-        runtime: Runtime.NODEJS_14_X,
-        code: Code.fromAsset(`${__dirname}/../lambdas`),
+        runtime: lambda.Runtime.NODEJS_14_X,
+        code: lambda.Code.fromAsset(path.join(__dirname, "..", "lambdas")),
         memorySize: 128,
       }
     );
+
+    const behavior: cloudfront.Behavior = props?.httpAuth
+      ? {
+          lambdaFunctionAssociations: [
+            {
+              lambdaFunction: edgeAuth.currentVersion,
+              eventType: cloudfront.LambdaEdgeEventType.VIEWER_REQUEST,
+            },
+          ],
+          isDefaultBehavior: true,
+          // allowedMethods: cloudfront.CloudFrontAllowedMethods.ALL,
+        }
+      : { isDefaultBehavior: true };
 
     const distribution = new cloudfront.CloudFrontWebDistribution(
       this,
@@ -118,19 +134,7 @@ export class SpaConstruct extends Construct {
               s3BucketSource: sourceBucket,
               originAccessIdentity: cloudfrontOAI,
             },
-            behaviors: [
-              // { isDefaultBehavior: true },
-              {
-                lambdaFunctionAssociations: [
-                  {
-                    lambdaFunction: edgeAuth.currentVersion,
-                    eventType: cloudfront.LambdaEdgeEventType.VIEWER_REQUEST,
-                  },
-                ],
-                isDefaultBehavior: true,
-                // allowedMethods: cloudfront.CloudFrontAllowedMethods.ALL,
-              },
-            ],
+            behaviors: [behavior],
           },
         ],
       }

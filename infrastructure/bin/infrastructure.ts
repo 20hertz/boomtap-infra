@@ -4,7 +4,8 @@ import { SpaConstruct } from "../lib/spa-construct";
 
 interface Config {
   readonly accountID: string;
-  readonly subdomain: string;
+  readonly httpAuth?: boolean;
+  readonly subdomain?: string;
 }
 
 export class SpaStack extends Stack {
@@ -12,11 +13,11 @@ export class SpaStack extends Stack {
     parent: App,
     name: string,
     props: StackProps,
-    subdomain?: string
+    config?: Omit<Config, "accountID">
   ) {
     super(parent, name, props);
 
-    new SpaConstruct(this, "SpaStack", { subdomain });
+    new SpaConstruct(this, "SpaStack", config);
   }
 }
 
@@ -32,6 +33,7 @@ const getConfig = (): Config => {
 
   return {
     accountID: app.node.tryGetContext(env)["AccountID"],
+    httpAuth: app.node.tryGetContext(env)["HTTPAuth"],
     subdomain: app.node.tryGetContext(env)["Subdomain"],
   };
 };
@@ -51,5 +53,8 @@ new SpaStack(
       qualifier: "feedform",
     }),
   },
-  `${config.subdomain}.feed`
+  {
+    subdomain: `${config.subdomain}.feed`,
+    httpAuth: config.httpAuth,
+  }
 );
