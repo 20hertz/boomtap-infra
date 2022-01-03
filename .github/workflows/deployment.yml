@@ -1,37 +1,47 @@
-# Sample workflow to access AWS resources when workflow is tied to branch
-# The workflow Creates static website using aws s3
 name: deployment
 
 on:
   push:
     branches:
       - unbind-from-cdk-spa-deploy
-
-permissions:
-  id-token: write
-  contents: read
+      # - staging
+      # - main
 
 jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infrastructure
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - name: Git clone the repository
+      - name: Clone the repository
         uses: actions/checkout@v2
 
-      - name: configure aws credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::770668172371:role/github-ci-role
+          role-to-assume: arn:aws:iam::925901147548:role/BootstrapStack-applicationDeployerRole4518AA36-12WS6TNBANY6T
           aws-region: ca-central-1
 
-      - uses: actions/setup-node@v2
+      - name: Use Node.js and cache modules
+        uses: actions/setup-node@v2
         with:
           node-version: "16"
+          cache: "yarn"
+          cache-dependency-path: ./infrastructure/yarn.lock
 
-      - run: yarn install
+      - name: Install project dependencies
+        run: yarn install
+
+      - name: Transpile lambda functions to JS
+        run: yarn build lambdas/index.ts
 
       - name: Synth infrastructure stack
-        run: yarn cdk synth
+        run: yarn cdk synth --context config=staging  --all
 
       - name: Deploy infrastructure stack
-        run: yarn cdk deploy --require-approval never
+        if: github.ref == 'refs/heads/unbind-from-cdk-spa-deploy'
+        run: yarn cdk deploy --context config=staging --all --require-approval never
