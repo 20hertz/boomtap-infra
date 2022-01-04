@@ -13,7 +13,7 @@ interface Config {
   gitHubBranchName: string;
 }
 
-export class OIDCStack extends Stack {
+export class OIDCProviderStack extends Stack {
   constructor(
     scope: Construct,
     id: string,

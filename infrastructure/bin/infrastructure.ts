@@ -48,10 +48,10 @@ new SpaStack(
       region: "ca-central-1",
       account: config.accountID,
     },
-    synthesizer: new DefaultStackSynthesizer({
-      // Specified at the bootstrap time. Checkout package.json "bootstrap" script.
-      qualifier: "feedform",
-    }),
+    // synthesizer: new DefaultStackSynthesizer({
+    // Specified at the bootstrap time. Checkout package.json "bootstrap" script.
+    //   qualifier: "feedform",
+    // }),
   },
   {
     subdomain: `${config.subdomain}.feed`,

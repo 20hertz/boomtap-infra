@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { App, DefaultStackSynthesizer } from "aws-cdk-lib";
-import { OIDCStack } from "../lib/openID-stack";
+import { OIDCProviderStack } from "../lib/openID-stack";
 
 interface Config {
   readonly gitHubBranchName: string;
@@ -23,12 +23,12 @@ const getConfig = (): Config => {
 
 const config = getConfig();
 
-new OIDCStack(app, "OpenIDConnectStack", config, {
+new OIDCProviderStack(app, "OIDCProviderStack", config, {
   env: {
-    region: "ca-central-1",
+    region: "us-east-2",
   },
-  synthesizer: new DefaultStackSynthesizer({
-    // Specified at the bootstrap time. Checkout package.json "bootstrap" script.
-    qualifier: "oidc",
-  }),
+  // synthesizer: new DefaultStackSynthesizer({
+  // Specified at the bootstrap time. Checkout package.json "bootstrap" script.
+  //   qualifier: "oidc",
+  // }),
 });
