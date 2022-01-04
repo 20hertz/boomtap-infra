@@ -94,7 +94,7 @@ export class SpaConstruct extends Construct {
             },
           ],
           isDefaultBehavior: true,
-          // allowedMethods: cloudfront.CloudFrontAllowedMethods.ALL,
+          allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD_OPTIONS,
         }
       : { isDefaultBehavior: true };
 
