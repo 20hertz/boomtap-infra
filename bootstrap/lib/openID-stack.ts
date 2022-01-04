@@ -9,8 +9,17 @@ import {
   WebIdentityPrincipal,
 } from "aws-cdk-lib/aws-iam";
 
-export class BootstrapStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
+interface Config {
+  gitHubBranchName: string;
+}
+
+export class OIDCStack extends Stack {
+  constructor(
+    scope: Construct,
+    id: string,
+    config: Config,
+    props?: StackProps
+  ) {
     super(scope, id, props);
 
     /**
@@ -28,8 +37,6 @@ export class BootstrapStack extends Stack {
 
     const githubUsername = "20hertz";
     const githubRepoName = "boomtap-infra";
-    const githubBranchName = "unbind-from-cdk-spa-deploy";
-
     /**
      * Create a deployment role that has short lived credentials. The only
      * principal that can assume this role is the GitHub Open ID provider.
@@ -42,7 +49,7 @@ export class BootstrapStack extends Stack {
         gitHubOIDCProvider.openIdConnectProviderArn,
         {
           StringLike: {
-            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${githubRepoName}:ref:refs/heads/${githubBranchName}`,
+            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${githubRepoName}:ref:refs/heads/${config.gitHubBranchName}`,
           },
         }
       ),
