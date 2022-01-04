@@ -7,8 +7,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "bootstrap:staging": "yarn cdk bootstrap --qualifier feedform --profile backstage -c config=staging",
-    "deploy": "yarn build lambdas/index.ts && cdk deploy --context config=staging --all --profile backstage"
+    "bootstrap:staging": "yarn cdk bootstrap --qualifier feedform -c config=staging --profile backstage",
+    "deploy": "yarn build lambdas/index.ts && cdk deploy --all -c config=staging --profile backstage"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.89",
