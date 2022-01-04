@@ -22,7 +22,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::925901147548:role/BootstrapStack-applicationDeployerRole4518AA36-12WS6TNBANY6T
+          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
           aws-region: ca-central-1
 
       - name: Use Node.js and cache modules
