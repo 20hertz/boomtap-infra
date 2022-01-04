@@ -7,9 +7,9 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:staging": "cdk deploy --profile backstage",
-    "destroy:staging": "cdk destroy --profile backstage",
-    "bootstrap:staging": "cdk bootstrap --qualifier bootstrap --profile backstage"
+    "deploy:staging": "cdk deploy --context config=staging --profile backstage",
+    "destroy:staging": "cdk destroy --context config=staging --profile backstage",
+    "bootstrap:staging": "cdk bootstrap --qualifier oidc --context config=staging --profile backstage"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
