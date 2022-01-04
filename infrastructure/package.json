@@ -7,7 +7,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "bootstrap:staging": "yarn cdk bootstrap --qualifier feedform -c config=staging --profile backstage",
+    "bootstrap:staging": "yarn cdk bootstrap -c config=staging --profile backstage",
     "deploy": "yarn build lambdas/index.ts && cdk deploy --all -c config=staging --profile backstage"
   },
   "devDependencies": {

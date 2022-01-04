@@ -1340,24 +1340,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "bootstrap@workspace:."
-  dependencies:
-    "@types/jest": ^27.0.3
-    "@types/node": 10.17.60
-    aws-cdk: 2.3.0
-    aws-cdk-lib: 2.3.0
-    constructs: ^10.0.13
-    jest: ^27.4.5
-    ts-jest: ^27.1.2
-    ts-node: ^10.4.0
-    typescript: ~4.5.4
-  bin:
-    bootstrap: bin/bootstrap.js
-  languageName: unknown
-  linkType: soft
-
 "brace-expansion@npm:^1.1.7":
   version: 1.1.11
   resolution: "brace-expansion@npm:1.1.11"
@@ -3903,6 +3885,24 @@ __metadata:
   checksum: 2478859ef817fc5d4e9c2f9e5728512ddd1dbc9fb7829ad263765bb6d3b91ce699d6e2332eef6b7dff183c2f490bd3349f1666427eaba4469fba0ac38dfd0d34
   languageName: node
   linkType: hard
+
+"openid-connect-provider@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "openid-connect-provider@workspace:."
+  dependencies:
+    "@types/jest": ^27.0.3
+    "@types/node": 10.17.60
+    aws-cdk: 2.3.0
+    aws-cdk-lib: 2.3.0
+    constructs: ^10.0.13
+    jest: ^27.4.5
+    ts-jest: ^27.1.2
+    ts-node: ^10.4.0
+    typescript: ~4.5.4
+  bin:
+    openid-connect-provider: bin/openID-connect.js
+  languageName: unknown
+  linkType: soft
 
 "optionator@npm:^0.8.1":
   version: 0.8.3

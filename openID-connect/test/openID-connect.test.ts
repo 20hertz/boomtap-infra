@@ -1,11 +1,11 @@
 import * as cdk from "aws-cdk-lib";
 import { Template, Match } from "aws-cdk-lib/assertions";
-import * as Bootstrap from "../lib/openID-stack";
+import * as OpenIDConnect from "../lib/openID-stack";
 
 test("SQS Queue and SNS Topic Created", () => {
   const app = new cdk.App();
   // WHEN
-  const stack = new Bootstrap.OIDCStack(app, "MyTestStack", {
+  const stack = new OpenIDConnect.OIDCProviderStack(app, "MyTestStack", {
     gitHubBranchName: "develop",
   });
   // THEN

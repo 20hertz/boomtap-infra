@@ -23,7 +23,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@master
         with:
           # role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-          role-to-assume: "arn:aws:iam::925901147548:role/OpenIDConnectStack-applicationDeployerRole4518AA36-PL5RQZ8SOSS9"
+          role-to-assume: "arn:aws:iam::925901147548:role/OIDCProviderStack-applicationDeployerRole4518AA36-10S3A2T91QI1H"
           aws-region: ca-central-1
 
       - name: Use Node.js and cache modules
