@@ -1,10 +1,9 @@
-name: deployment
+name: Infra deployment
 
 on:
-  push:
+  pull_request:
     branches:
-      - unbind-from-cdk-spa-deploy
-      # - staging
+      - staging
       # - main
 
 jobs:
@@ -43,5 +42,5 @@ jobs:
         run: yarn cdk synth --context config=staging  --all
 
       - name: Deploy infrastructure stack
-        if: github.ref == 'refs/heads/unbind-from-cdk-spa-deploy'
+        if: github.ref == 'refs/heads/staging'
         run: yarn cdk deploy --context config=staging --all --require-approval never
