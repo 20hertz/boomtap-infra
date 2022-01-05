@@ -25,7 +25,7 @@ There are a few steps that needs to be done manually for this:
 Easiest way is using CLI's [create-account](https://docs.aws.amazon.com/cli/latest/reference/organizations/create-account.html) command
 
 ```
-% aws create-account --email <value> --account-name <ENVIRONMENT_NAME>
+% aws organizations create-account --email <value> --account-name <ENVIRONMENT_NAME>
 ```
 
 ### 2. Create a policy to allow deployment through CDK
@@ -49,7 +49,7 @@ Easiest way is using CLI's [create-account](https://docs.aws.amazon.com/cli/late
   - Actions: AssumeRole
   - Resources: Specific, then choose Add ARN
     - Account ID: account ID of the new account
-    - Role name: _DeployerRole_
+    - Role name with path: _DeployerRole_
   - In review step, name that policy _GrantAccessToBoomtapDeployerRole_
 
 - Attach this policy to the IAM user responsible of deployment
@@ -73,7 +73,7 @@ region = <REGION>
   - For _Domain Name_, enter: <subdomain (if any)>.<domain_apex>
   - Click create
 - Click on the row with NS type. And copy the 4 lines in the _Value_ field
-- Switch to the main account, where the domain is hosted. And go into Route 53 console.
+- Switch to the main account, where the domain is hosted.
 - Select the domain
 - Create a record set, and fill in:
   - Name: <subdomain>
@@ -85,13 +85,14 @@ Now we’ve delegated the <subdomain> of <domain_apex> to our new AWS account
 
 ### 7. Go to Deploy Bootstrap stack
 
-- bootstrap the stack with the --profile <PROFILE_OF_USER_CREATED_ABOVE>
+- bootstrap the stack with `--profile <PROFILE_CREATED_ABOVE>`
 - deploy the stack
 - Copy the ARN for the applicationDeployerRole
 
 ### 8. Go to Infrastructure stack
 
-- paste the ARN next to _role-to-assume_ in the github workflow
+- Create a repo secret in GitHub and paste the above ARN as the value
+- Assign this secret to _role-to-assume_ in the github workflow
 - bootstrap the stack
 
 ## References

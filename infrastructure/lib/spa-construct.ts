@@ -59,7 +59,7 @@ export class SpaConstruct extends Construct {
     // TLS certificate
     const certificate = new acm.DnsValidatedCertificate(
       this,
-      "SiteCertificate",
+      "TLSCertificate",
       {
         domainName: siteDomain,
         hostedZone,
