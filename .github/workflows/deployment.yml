@@ -26,13 +26,13 @@ jobs:
           repository: 20hertz/boomtap-feed
           # path: "./placeholder"
 
-      - name: Bunch of shell scripts
-        run: |
-          echo Where am I
-          pwd
-          echo list all files in directory
-          ls
-        working-directory: infrastructure
+      # - name: Bunch of shell scripts
+      #   run: |
+      #     echo Where am I
+      #     pwd
+      #     echo list all files in directory
+      #     ls
+      #   working-directory: infrastructure
 
       - name: Install boomtap-feed dependencies
         run: yarn install
