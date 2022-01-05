@@ -3,68 +3,45 @@ name: Infra deployment
 on:
   push:
     branches:
-      - develop
       - staging
       # - main
 
 jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: infrastructure
-    # permissions:
-    #   id-token: write
-    #   contents: read
+    defaults:
+      run:
+        working-directory: infrastructure
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Clone the repository
         uses: actions/checkout@v2
 
-      - name: Clone boomtap-feed repository
-        uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
         with:
-          repository: 20hertz/boomtap-feed
-          path: "boomtap-feed"
+          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+          # role-to-assume: "arn:aws:iam::925901147548:role/OIDCProviderStack-applicationDeployerRole4518AA36-10S3A2T91QI1H"
+          aws-region: ca-central-1
 
-      - run: ls
+      - name: Use Node.js and cache modules
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: "yarn"
+          cache-dependency-path: ./infrastructure/yarn.lock
 
-      # - name: Bunch of shell scripts
-      #   run: |
-      #     ls -R
-      # working-directory: infrastructure
+      - name: Install project dependencies
+        run: yarn install
 
-      # - name: Use Node.js
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: 16
+      - name: Transpile lambda functions to JS
+        run: yarn build lambdas/index.ts
 
-      # - name: Install boomtap-feed dependencies
-      #   run: npm install
-      #   working-directory: boomtap-feed
+      - name: Synth infrastructure stack
+        run: yarn cdk synth --context config=staging  --all
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@master
-      #   with:
-      #     # role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-      #     role-to-assume: "arn:aws:iam::925901147548:role/OIDCProviderStack-applicationDeployerRole4518AA36-10S3A2T91QI1H"
-      #     aws-region: ca-central-1
-
-      # - name: Use Node.js and cache modules
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: "16"
-      #     cache: "yarn"
-      #     cache-dependency-path: ./infrastructure/yarn.lock
-
-      # - name: Install project dependencies
-      #   run: yarn install
-
-      # - name: Transpile lambda functions to JS
-      #   run: yarn build lambdas/index.ts
-
-      # - name: Synth infrastructure stack
-      #   run: yarn cdk synth --context config=staging  --all
-
-      # - name: Deploy infrastructure stack
-      #   if: github.ref == 'refs/heads/staging'
-      #   run: yarn cdk deploy --context config=staging --all --require-approval never
+      - name: Deploy infrastructure stack
+        if: github.ref == 'refs/heads/staging'
+        run: yarn cdk deploy --context config=staging --all --require-approval never
