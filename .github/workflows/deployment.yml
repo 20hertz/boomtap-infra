@@ -37,7 +37,7 @@ jobs:
           node-version: 16
 
       - name: Install boomtap-feed dependencies
-        run: yarn install
+        run: npm install
         working-directory: boomtap-feed
 
       # - name: Configure AWS credentials
