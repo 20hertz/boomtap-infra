@@ -24,16 +24,17 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: 20hertz/boomtap-feed
+          ref: develop
           # path: "./placeholder"
 
-      - name: Bunch of shell scripts
-        run: |
-          ls -R
-        # working-directory: infrastructure
+      # - name: Bunch of shell scripts
+      #   run: |
+      #     ls -R
+      # working-directory: infrastructure
 
-      # - name: Install boomtap-feed dependencies
-      #   run: yarn install
-      #   working-directory: infrastructure/boomtap-feed
+      - name: Install boomtap-feed dependencies
+        run: yarn install
+        working-directory: infrastructure/boomtap-feed
 
       # - name: Configure AWS credentials
       #   uses: aws-actions/configure-aws-credentials@master
