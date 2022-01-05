@@ -3,6 +3,7 @@ name: Infra deployment
 on:
   push:
     branches:
+      - develop
       - staging
       # - main
 
@@ -19,29 +20,43 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@master
+      - name: Clone boomtap-feed repository
+        uses: actions/checkout@v2
         with:
-          # role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-          role-to-assume: "arn:aws:iam::925901147548:role/OIDCProviderStack-applicationDeployerRole4518AA36-10S3A2T91QI1H"
-          aws-region: ca-central-1
+          repository: 20hertz/boomtap-feed
+          # path: "./placeholder"
 
-      - name: Use Node.js and cache modules
-        uses: actions/setup-node@v2
-        with:
-          node-version: "16"
-          cache: "yarn"
-          cache-dependency-path: ./infrastructure/yarn.lock
+      - name: List files
+        run: ls
+        working-directory: infrastructure
 
-      - name: Install project dependencies
+      - name: Install boomtap-feed dependencies
         run: yarn install
+        working-directory: infrastructure/boomtap-feed
 
-      - name: Transpile lambda functions to JS
-        run: yarn build lambdas/index.ts
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@master
+      #   with:
+      #     # role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+      #     role-to-assume: "arn:aws:iam::925901147548:role/OIDCProviderStack-applicationDeployerRole4518AA36-10S3A2T91QI1H"
+      #     aws-region: ca-central-1
 
-      - name: Synth infrastructure stack
-        run: yarn cdk synth --context config=staging  --all
+      # - name: Use Node.js and cache modules
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: "16"
+      #     cache: "yarn"
+      #     cache-dependency-path: ./infrastructure/yarn.lock
 
-      - name: Deploy infrastructure stack
-        if: github.ref == 'refs/heads/staging'
-        run: yarn cdk deploy --context config=staging --all --require-approval never
+      # - name: Install project dependencies
+      #   run: yarn install
+
+      # - name: Transpile lambda functions to JS
+      #   run: yarn build lambdas/index.ts
+
+      # - name: Synth infrastructure stack
+      #   run: yarn cdk synth --context config=staging  --all
+
+      # - name: Deploy infrastructure stack
+      #   if: github.ref == 'refs/heads/staging'
+      #   run: yarn cdk deploy --context config=staging --all --require-approval never
