@@ -10,9 +10,9 @@ on:
 jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: infrastructure
+    # defaults:
+    #   run:
+    #     working-directory: infrastructure
     permissions:
       id-token: write
       contents: read
@@ -33,7 +33,7 @@ jobs:
 
       - name: Install boomtap-feed dependencies
         run: yarn install
-        working-directory: infrastructure/boomtap-feed
+        working-directory: boomtap-feed
 
       # - name: Configure AWS credentials
       #   uses: aws-actions/configure-aws-credentials@master
