@@ -22,14 +22,14 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
-          # role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-          role-to-assume: "arn:aws:iam::925901147548:role/OIDCProviderStack-applicationDeployerRole4518AA36-10S3A2T91QI1H"
+          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+          # role-to-assume: "arn:aws:iam::925901147548:role/OIDCProviderStack-applicationDeployerRole4518AA36-10S3A2T91QI1H"
           aws-region: ca-central-1
 
       - name: Use Node.js and cache modules
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: 16
           cache: "yarn"
           cache-dependency-path: ./infrastructure/yarn.lock
 
