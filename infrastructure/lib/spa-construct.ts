@@ -1,6 +1,5 @@
 import { RemovalPolicy, Stack } from "aws-cdk-lib";
 import * as route53 from "aws-cdk-lib/aws-route53";
-import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
 import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
@@ -12,23 +11,29 @@ import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 
 interface SpaProps {
-  subdomain?: string;
+  hostedZoneId: string;
   httpAuth?: boolean;
+  subdomain?: string;
 }
 
 const domainApex = "boomtap.io";
 
 export class SpaConstruct extends Construct {
-  constructor(scope: Stack, name: string, props?: SpaProps) {
+  constructor(scope: Stack, name: string, props: SpaProps) {
     super(scope, name);
 
-    const siteDomain = props?.subdomain
+    const siteDomain = props.subdomain
       ? props.subdomain + "." + domainApex
       : domainApex;
 
-    const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
-      domainName: siteDomain,
-    });
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      this,
+      "HostedZone",
+      {
+        zoneName: siteDomain,
+        hostedZoneId: props.hostedZoneId,
+      }
+    );
 
     const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
       this,
@@ -85,7 +90,7 @@ export class SpaConstruct extends Construct {
       }
     );
 
-    const behavior: cloudfront.Behavior = props?.httpAuth
+    const behavior: cloudfront.Behavior = props.httpAuth
       ? {
           lambdaFunctionAssociations: [
             {

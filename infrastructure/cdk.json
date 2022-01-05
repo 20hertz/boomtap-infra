@@ -23,7 +23,8 @@
     "staging": {
       "AccountID": "925901147548",
       "Subdomain": "backstage",
-      "HTTPAuth": true
+      "HTTPAuth": true,
+      "HostedZoneId": "Z09350221F87GDFXSJLB9"
     }
   }
 }
