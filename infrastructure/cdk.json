@@ -24,8 +24,8 @@
       "AccountID": "925901147548",
       "HTTPAuth": true,
       "LandingPageStack": {
-        "Subdomain": "backstage.feed",
-        "HostedZoneId": "Z09350221F87GDFXSJLB9"
+        "Subdomain": "feed.backstage",
+        "HostedZoneId": "Z05275431HDAG91CHCZQ5"
       },
       "WebAppStack": {
         "Subdomain": "backstage",
