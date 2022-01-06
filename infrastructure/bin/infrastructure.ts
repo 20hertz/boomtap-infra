@@ -24,7 +24,7 @@ export class SpaStack extends Stack {
 
 const app = new App();
 
-const getConfig = (): Config => {
+const mapConfig = (stackName: string): Config => {
   const env = app.node.tryGetContext("config");
 
   if (!env)
@@ -34,30 +34,62 @@ const getConfig = (): Config => {
 
   return {
     accountID: app.node.tryGetContext(env)["AccountID"],
-    hostedZoneId: app.node.tryGetContext(env)["HostedZoneId"],
+    hostedZoneId: app.node.tryGetContext(env)[stackName]["HostedZoneId"],
     httpAuth: app.node.tryGetContext(env)["HTTPAuth"],
-    subdomain: app.node.tryGetContext(env)["Subdomain"],
+    subdomain: app.node.tryGetContext(env)[stackName]["Subdomain"],
   };
 };
 
-const config = getConfig();
+// const landingPageConfig = mapConfig("LandingPage");
 
-new SpaStack(
-  app,
-  "LandingPageStack",
-  {
-    env: {
-      region: "ca-central-1",
-      account: config.accountID,
+// new SpaStack(
+//   app,
+//   "LandingPageStack",
+//   {
+//     env: {
+//       region: "ca-central-1",
+//       account: landingPageConfig.accountID,
+//     },
+//   },
+//   {
+//     hostedZoneId: landingPageConfig.hostedZoneId,
+//     httpAuth: landingPageConfig.httpAuth,
+//     subdomain: landingPageConfig.subdomain,
+//   }
+// );
+
+// const webAppConfig = mapConfig("WebApp");
+
+// new SpaStack(
+//   app,
+//   "WebAppStack",
+//   {
+//     env: {
+//       region: "ca-central-1",
+//       account: webAppConfig.accountID,
+//     },
+//   },
+//   {
+//     hostedZoneId: webAppConfig.hostedZoneId,
+//     httpAuth: webAppConfig.httpAuth,
+//     subdomain: webAppConfig.subdomain,
+//   }
+// );
+
+const makeStack = (stackName: string) => {
+  const { accountID, ...config } = mapConfig(stackName);
+  new SpaStack(
+    app,
+    stackName,
+    {
+      env: {
+        region: "ca-central-1",
+        account: accountID,
+      },
     },
-    // synthesizer: new DefaultStackSynthesizer({
-    // Specified at the bootstrap time. Checkout package.json "bootstrap" script.
-    //   qualifier: "feedform",
-    // }),
-  },
-  {
-    hostedZoneId: config.hostedZoneId,
-    httpAuth: config.httpAuth,
-    subdomain: `${config.subdomain}.feed`,
-  }
-);
+    config
+  );
+};
+
+makeStack("LandingPageStack");
+makeStack("WebAppStack");
