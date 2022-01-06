@@ -22,9 +22,15 @@
     "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
     "staging": {
       "AccountID": "925901147548",
-      "Subdomain": "backstage",
       "HTTPAuth": true,
-      "HostedZoneId": "Z09350221F87GDFXSJLB9"
+      "LandingPageStack": {
+        "Subdomain": "backstage.feed",
+        "HostedZoneId": "Z09350221F87GDFXSJLB9"
+      },
+      "WebAppStack": {
+        "Subdomain": "backstage",
+        "HostedZoneId": "Z0767370R0YM06W66B9Y"
+      }
     }
   }
 }

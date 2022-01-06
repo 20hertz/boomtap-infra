@@ -73,8 +73,8 @@ region = <REGION>
   - For _Domain Name_, enter: <subdomain (if any)>.<domain_apex>
   - Click create
 - Click on the row with NS type. And copy the 4 lines in the _Value_ field
-- Switch to the main account, where the domain is hosted.
-- Select the domain
+- Switch to the Production account.
+- Select the domain apex
 - Create a record set, and fill in:
   - Name: <subdomain>
   - Type: NS - Name server
