@@ -1,4 +1,4 @@
-import { Aws, RemovalPolicy, Stack } from "aws-cdk-lib";
+import { App, Aws, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
@@ -10,7 +10,7 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Metric } from "aws-cdk-lib/aws-cloudwatch";
 
-interface SpaProps {
+export interface SpaProps extends StackProps {
   certificateArn: string;
   domainName: string;
   hostedZoneId: string;
@@ -18,7 +18,15 @@ interface SpaProps {
   subdomain?: string;
 }
 
-export class SpaConstruct extends Construct {
+export class SpaStack extends Stack {
+  constructor(parent: App, name: string, props: SpaProps) {
+    super(parent, name, props);
+
+    new SpaConstruct(this, "SpaConstruct", props);
+  }
+}
+
+class SpaConstruct extends Construct {
   constructor(scope: Stack, name: string, props: SpaProps) {
     super(scope, name);
 

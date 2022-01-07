@@ -1,28 +1,14 @@
 #!/usr/bin/env node
-import { App, Stack, StackProps } from "aws-cdk-lib";
+import { App } from "aws-cdk-lib";
 import { CertifiedDomainStack } from "../lib/certificate-stack";
-import { SpaConstruct } from "../lib/spa-construct";
+import { SpaStack } from "../lib/spa-construct";
 
 interface Config {
-  readonly accountID: string;
   readonly certificateArn: string;
   readonly domainName: string;
   readonly hostedZoneId: string;
   readonly httpAuth?: boolean;
   readonly subdomain?: string;
-}
-
-export class SpaStack extends Stack {
-  constructor(
-    parent: App,
-    name: string,
-    props: StackProps,
-    config: Omit<Config, "accountID">
-  ) {
-    super(parent, name, props);
-
-    new SpaConstruct(this, "SpaConstruct", config);
-  }
 }
 
 const app = new App();
@@ -36,7 +22,6 @@ const mapConfig = (stackName: string): Config => {
     );
 
   return {
-    accountID: app.node.tryGetContext(env)["AccountID"],
     certificateArn: app.node.tryGetContext(env)["CertificateARN"],
     domainName: app.node.tryGetContext(env)["DomainName"],
     hostedZoneId: app.node.tryGetContext(env)["HostedZoneId"],
@@ -45,21 +30,14 @@ const mapConfig = (stackName: string): Config => {
   };
 };
 
-const makeStack = (stackName: string) => {
-  const { accountID, ...config } = mapConfig(stackName);
-  new SpaStack(
-    app,
+const makeStack = (stackName: string) =>
+  new SpaStack(app, stackName, {
     stackName,
-    {
-      stackName,
-      env: {
-        region: "ca-central-1",
-        // account: accountID,
-      },
+    env: {
+      region: "ca-central-1",
     },
-    config
-  );
-};
+    ...mapConfig(stackName),
+  });
 
 new CertifiedDomainStack(app, "CertifiedDomainStack", {
   env: {
