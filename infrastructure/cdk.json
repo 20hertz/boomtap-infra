@@ -23,13 +23,15 @@
     "staging": {
       "AccountID": "925901147548",
       "HTTPAuth": true,
+      "DomainName": "backstage.boomtap.io",
+      "CertificateARN": "arn:aws:acm:us-east-1:925901147548:certificate/52a0a0e6-dc74-4179-bb85-38efd9429768",
+      "HostedZoneId": "Z059365626H43JUJSBD7L",
       "LandingPageStack": {
-        "Subdomain": "feed.backstage",
-        "HostedZoneId": "Z05275431HDAG91CHCZQ5"
+        "Subdomain": "feed"
       },
-      "WebAppStack": {
-        "Subdomain": "backstage",
-        "HostedZoneId": "Z0767370R0YM06W66B9Y"
+      "WebAppStack": {},
+      "CertifiedDomainStack": {
+        "Subdomain": "feed"
       }
     }
   }

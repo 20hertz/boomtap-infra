@@ -1,9 +1,12 @@
 #!/usr/bin/env node
-import { App, DefaultStackSynthesizer, Stack, StackProps } from "aws-cdk-lib";
+import { App, Stack, StackProps } from "aws-cdk-lib";
+import { CertifiedDomainStack } from "../lib/certificate-stack";
 import { SpaConstruct } from "../lib/spa-construct";
 
 interface Config {
   readonly accountID: string;
+  readonly certificateArn: string;
+  readonly domainName: string;
   readonly hostedZoneId: string;
   readonly httpAuth?: boolean;
   readonly subdomain?: string;
@@ -18,7 +21,7 @@ export class SpaStack extends Stack {
   ) {
     super(parent, name, props);
 
-    new SpaConstruct(this, "SpaStack", config);
+    new SpaConstruct(this, "SpaConstruct", config);
   }
 }
 
@@ -34,47 +37,13 @@ const mapConfig = (stackName: string): Config => {
 
   return {
     accountID: app.node.tryGetContext(env)["AccountID"],
-    hostedZoneId: app.node.tryGetContext(env)[stackName]["HostedZoneId"],
+    certificateArn: app.node.tryGetContext(env)["CertificateARN"],
+    domainName: app.node.tryGetContext(env)["DomainName"],
+    hostedZoneId: app.node.tryGetContext(env)["HostedZoneId"],
     httpAuth: app.node.tryGetContext(env)["HTTPAuth"],
     subdomain: app.node.tryGetContext(env)[stackName]["Subdomain"],
   };
 };
-
-// const landingPageConfig = mapConfig("LandingPage");
-
-// new SpaStack(
-//   app,
-//   "LandingPageStack",
-//   {
-//     env: {
-//       region: "ca-central-1",
-//       account: landingPageConfig.accountID,
-//     },
-//   },
-//   {
-//     hostedZoneId: landingPageConfig.hostedZoneId,
-//     httpAuth: landingPageConfig.httpAuth,
-//     subdomain: landingPageConfig.subdomain,
-//   }
-// );
-
-// const webAppConfig = mapConfig("WebApp");
-
-// new SpaStack(
-//   app,
-//   "WebAppStack",
-//   {
-//     env: {
-//       region: "ca-central-1",
-//       account: webAppConfig.accountID,
-//     },
-//   },
-//   {
-//     hostedZoneId: webAppConfig.hostedZoneId,
-//     httpAuth: webAppConfig.httpAuth,
-//     subdomain: webAppConfig.subdomain,
-//   }
-// );
 
 const makeStack = (stackName: string) => {
   const { accountID, ...config } = mapConfig(stackName);
@@ -82,14 +51,23 @@ const makeStack = (stackName: string) => {
     app,
     stackName,
     {
+      stackName,
       env: {
         region: "ca-central-1",
-        account: accountID,
+        // account: accountID,
       },
     },
     config
   );
 };
+
+new CertifiedDomainStack(app, "CertifiedDomainStack", {
+  env: {
+    region: "us-east-1",
+  },
+  domainName: mapConfig("CertifiedDomainStack").domainName,
+  subdomain: mapConfig("CertifiedDomainStack").subdomain,
+});
 
 makeStack("LandingPageStack");
 makeStack("WebAppStack");
