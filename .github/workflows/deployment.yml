@@ -35,12 +35,12 @@ jobs:
       - name: Install project dependencies
         run: yarn install
 
-      - name: Transpile lambda functions to JS
+      - name: Transpile lambda handlers to JS
         run: yarn build lambdas/index.ts
 
       - name: Synth infrastructure stack
-        run: yarn cdk synth --context config=staging  --all
+        run: yarn cdk synth LandingPageStack WebAppStack --context config=staging
 
       - name: Deploy infrastructure stack
         if: github.ref == 'refs/heads/staging'
-        run: yarn cdk deploy --context config=staging --all --require-approval never
+        run: yarn cdk deploy LandingPageStack WebAppStack --context config=staging --require-approval never

@@ -8,8 +8,9 @@
     "test": "jest",
     "cdk": "cdk",
     "bootstrap:staging": "yarn cdk bootstrap -c config=staging --profile backstage",
-    "deploy": "yarn build lambdas/index.ts && cdk deploy --all -c config=staging --profile backstage",
-    "destroy": "cdk destroy --all -c config=staging --profile backstage"
+    "deploy": "yarn build lambdas/index.ts && cdk deploy LandingPageStack WebAppStack -c config=staging --profile backstage --require-approval never",
+    "destroy:all": "cdk destroy --all -c config=staging --profile backstage",
+    "deploy:certificate:staging": "cdk deploy CertifiedDomainStack -c config=staging --profile backstage"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.89",

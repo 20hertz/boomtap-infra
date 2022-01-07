@@ -1,4 +1,4 @@
-import { RemovalPolicy, Stack } from "aws-cdk-lib";
+import { Aws, RemovalPolicy, Stack } from "aws-cdk-lib";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
@@ -7,24 +7,24 @@ import { Construct } from "constructs";
 import * as path from "path";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as iam from "aws-cdk-lib/aws-iam";
-import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import { Metric } from "aws-cdk-lib/aws-cloudwatch";
 
 interface SpaProps {
+  certificateArn: string;
+  domainName: string;
   hostedZoneId: string;
   httpAuth?: boolean;
   subdomain?: string;
 }
-
-const domainApex = "boomtap.io";
 
 export class SpaConstruct extends Construct {
   constructor(scope: Stack, name: string, props: SpaProps) {
     super(scope, name);
 
     const siteDomain = props.subdomain
-      ? props.subdomain + "." + domainApex
-      : domainApex;
+      ? props.subdomain + "." + props.domainName
+      : props.domainName;
 
     const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
       this,
@@ -61,19 +61,22 @@ export class SpaConstruct extends Construct {
       })
     );
 
-    // TLS certificate
-    const certificate = new acm.DnsValidatedCertificate(
-      this,
-      "TLSCertificate",
-      {
-        domainName: siteDomain,
-        hostedZone,
-        region: "us-east-1", // Cloudfront only checks this region for certificates.
-      }
-    );
-
     const viewerCertificate = cloudfront.ViewerCertificate.fromAcmCertificate(
-      certificate,
+      {
+        certificateArn: props.certificateArn,
+        env: {
+          region: "us-east-1",
+          account: Aws.ACCOUNT_ID,
+        },
+        node: this.node,
+        stack: scope,
+        metricDaysToExpiry: () =>
+          new Metric({
+            namespace: "TLS Viewer Certificate Validity",
+            metricName: "TLS Viewer Certificate Expired",
+          }),
+        applyRemovalPolicy(): void {},
+      },
       {
         aliases: [siteDomain],
       }
