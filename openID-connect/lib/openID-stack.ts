@@ -9,17 +9,12 @@ import {
   WebIdentityPrincipal,
 } from "aws-cdk-lib/aws-iam";
 
-interface Config {
+interface OIDCProviderStackProps extends StackProps {
   gitHubBranchName: string;
 }
 
 export class OIDCProviderStack extends Stack {
-  constructor(
-    scope: Construct,
-    id: string,
-    config: Config,
-    props?: StackProps
-  ) {
+  constructor(scope: Construct, id: string, props: OIDCProviderStackProps) {
     super(scope, id, props);
 
     /**
@@ -36,7 +31,6 @@ export class OIDCProviderStack extends Stack {
     );
 
     const githubUsername = "20hertz";
-    const githubRepoName = "boomtap-infra";
     /**
      * Create a deployment role that has short lived credentials. The only
      * principal that can assume this role is the GitHub Open ID provider.
@@ -44,12 +38,12 @@ export class OIDCProviderStack extends Stack {
      * This role is granted authority to assume aws cdk roles; which are created
      * by the aws cdk v2.
      */
-    const applicationDeployerRole = new Role(this, "applicationDeployerRole", {
+    const cdkDeployerRole = new Role(this, "CDKDeployerRole", {
       assumedBy: new WebIdentityPrincipal(
         gitHubOIDCProvider.openIdConnectProviderArn,
         {
           StringLike: {
-            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/${githubRepoName}:ref:refs/heads/${config.gitHubBranchName}`,
+            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap-infra:ref:refs/heads/${props.gitHubBranchName}`,
           },
         }
       ),
@@ -59,7 +53,11 @@ export class OIDCProviderStack extends Stack {
           statements: [
             new PolicyStatement({
               effect: Effect.ALLOW,
-              actions: ["sts:AssumeRole", "route53:GetHostedZone"],
+              actions: [
+                "sts:AssumeRole",
+                // try without
+                // "route53:GetHostedZone"
+              ],
               resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
             }),
           ],
@@ -67,8 +65,49 @@ export class OIDCProviderStack extends Stack {
       },
     });
 
-    new CfnOutput(this, "applicationDeployerRoleArn", {
-      value: applicationDeployerRole.roleArn,
+    new CfnOutput(this, "CDKDeployerRoleArn", {
+      value: cdkDeployerRole.roleArn,
+      description:
+        "Copy-paste this ARN next to role-to-assume in the deployment workflow",
+    });
+
+    const websiteDeployerRole = new Role(this, "WebsiteDeployerRole", {
+      assumedBy: new WebIdentityPrincipal(
+        gitHubOIDCProvider.openIdConnectProviderArn,
+        {
+          StringLike: {
+            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap:ref:refs/heads/develop`,
+          },
+        }
+      ),
+      inlinePolicies: {
+        AppDeploymentPolicy: new PolicyDocument({
+          assignSids: true,
+          statements: [
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              actions: ["sts:AssumeRole"],
+              resources: [
+                `arn:aws:iam::${this.account}:role/WebsiteDeployerRole`,
+              ],
+            }),
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              actions: ["cloudfront:CreateInvalidation"],
+              resources: [`arn:aws:cloudfront::${this.account}:distribution/*`],
+            }),
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              actions: ["s3:*"],
+              resources: ["*"],
+            }),
+          ],
+        }),
+      },
+    });
+
+    new CfnOutput(this, "WebsiteDeployerRoleArn", {
+      value: websiteDeployerRole.roleArn,
       description:
         "Copy-paste this ARN next to role-to-assume in the deployment workflow",
     });

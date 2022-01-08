@@ -1,13 +1,12 @@
 import { CloudFrontRequestEvent, Callback, Context } from "aws-lambda";
 
 exports.handler = async (
-  event: CloudFrontRequestEvent,
+  { Records }: CloudFrontRequestEvent,
   _: Context,
   callback: Callback
 ) => {
-  const request = event.Records[0].cf.request;
-
-  const headers = request.headers;
+  const { request } = Records[0].cf;
+  const { headers } = request;
 
   const user = "my-username";
 
