@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { App } from "aws-cdk-lib";
 import { CertifiedDomainStack } from "../lib/certificate-stack";
-import { SpaStack } from "../lib/spa-construct";
+import { SpaStack } from "../lib/spa-stack";
 
 interface Config {
   readonly certificateArn: string;
@@ -30,15 +30,6 @@ const mapConfig = (stackName: string): Config => {
   };
 };
 
-const makeStack = (stackName: string) =>
-  new SpaStack(app, stackName, {
-    stackName,
-    env: {
-      region: "ca-central-1",
-    },
-    ...mapConfig(stackName),
-  });
-
 new CertifiedDomainStack(app, "CertifiedDomainStack", {
   env: {
     region: "us-east-1",
@@ -47,5 +38,13 @@ new CertifiedDomainStack(app, "CertifiedDomainStack", {
   subdomain: mapConfig("CertifiedDomainStack").subdomain,
 });
 
-makeStack("LandingPageStack");
-makeStack("WebAppStack");
+const spaStackProps = {
+  env: {
+    region: "ca-central-1",
+  },
+  ...mapConfig("LandingPageStack"),
+};
+
+new SpaStack(app, "LandingPageStack", spaStackProps);
+
+new SpaStack(app, "WebAppStack", spaStackProps);

@@ -5,10 +5,19 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 import * as path from "path";
-import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+import {
+  Behavior,
+  CloudFrontAllowedMethods,
+  CloudFrontWebDistribution,
+  experimental,
+  LambdaEdgeEventType,
+  OriginAccessIdentity,
+  ViewerCertificate,
+} from "aws-cdk-lib/aws-cloudfront";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Metric } from "aws-cdk-lib/aws-cloudwatch";
+import { Function, IVersion } from "aws-cdk-lib/aws-lambda";
 
 export interface SpaProps extends StackProps {
   certificateArn: string;
@@ -43,7 +52,7 @@ class SpaConstruct extends Construct {
       }
     );
 
-    const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
+    const cloudfrontOAI = new OriginAccessIdentity(
       this,
       "OriginAccessIdentity",
       { comment: `OAI for ${name}` }
@@ -69,7 +78,7 @@ class SpaConstruct extends Construct {
       })
     );
 
-    const viewerCertificate = cloudfront.ViewerCertificate.fromAcmCertificate(
+    const viewerCertificate = ViewerCertificate.fromAcmCertificate(
       {
         certificateArn: props.certificateArn,
         env: {
@@ -90,31 +99,27 @@ class SpaConstruct extends Construct {
       }
     );
 
-    const edgeAuth = new cloudfront.experimental.EdgeFunction(
-      this,
-      "EdgeAuthFn",
-      {
-        handler: "index.handler",
-        runtime: lambda.Runtime.NODEJS_14_X,
-        code: lambda.Code.fromAsset(path.join(__dirname, "..", "lambdas")),
-        memorySize: 128,
-      }
-    );
+    const edgeAuth = new experimental.EdgeFunction(this, "EdgeAuthFn", {
+      handler: "index.handler",
+      runtime: lambda.Runtime.NODEJS_14_X,
+      code: lambda.Code.fromAsset(path.join(__dirname, "..", "lambdas")),
+      memorySize: 128,
+    });
 
-    const behavior: cloudfront.Behavior = props.httpAuth
+    const behavior: Behavior = props.httpAuth
       ? {
           lambdaFunctionAssociations: [
             {
-              lambdaFunction: edgeAuth.currentVersion,
-              eventType: cloudfront.LambdaEdgeEventType.VIEWER_REQUEST,
+              lambdaFunction: edgeAuth,
+              eventType: LambdaEdgeEventType.VIEWER_REQUEST,
             },
           ],
           isDefaultBehavior: true,
-          allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD_OPTIONS,
+          allowedMethods: CloudFrontAllowedMethods.GET_HEAD_OPTIONS,
         }
       : { isDefaultBehavior: true };
 
-    const distribution = new cloudfront.CloudFrontWebDistribution(
+    const distribution = new CloudFrontWebDistribution(
       this,
       "CloudFrontDistribution",
       {
