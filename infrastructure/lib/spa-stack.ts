@@ -18,25 +18,51 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Metric } from "aws-cdk-lib/aws-cloudwatch";
 import { Function, IVersion } from "aws-cdk-lib/aws-lambda";
+import { SSMParameterReader } from "./ssm-param-reader";
 
-export interface SpaProps extends StackProps {
-  certificateArn: string;
+export interface SpaStackProps extends StackProps {
   domainName: string;
-  hostedZoneId: string;
   httpAuth?: boolean;
   subdomain?: string;
 }
 
 export class SpaStack extends Stack {
-  constructor(parent: App, name: string, props: SpaProps) {
+  constructor(parent: App, name: string, props: SpaStackProps) {
     super(parent, name, props);
 
-    new SpaConstruct(this, "SpaConstruct", props);
+    const hostedZoneIdReader = new SSMParameterReader(
+      this,
+      "HostedZoneIdReader",
+      {
+        parameterName: "Hosted_Zone_ID",
+        region: "us-east-1",
+      }
+    );
+
+    const certificateArnReader = new SSMParameterReader(
+      this,
+      "CertificateArnReader",
+      {
+        parameterName: "Certificate_ARN",
+        region: "us-east-1",
+      }
+    );
+
+    new SpaConstruct(this, "SpaConstruct", {
+      hostedZoneId: hostedZoneIdReader.getParameterValue(),
+      certificateArn: certificateArnReader.getParameterValue(),
+      ...props,
+    });
   }
 }
 
+export interface SpaConstructProps extends SpaStackProps {
+  certificateArn: string;
+  hostedZoneId: string;
+}
+
 class SpaConstruct extends Construct {
-  constructor(scope: Stack, name: string, props: SpaProps) {
+  constructor(scope: Stack, name: string, props: SpaConstructProps) {
     super(scope, name);
 
     const siteDomain = props.subdomain

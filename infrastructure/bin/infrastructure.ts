@@ -4,9 +4,9 @@ import { CertifiedDomainStack } from "../lib/certificate-stack";
 import { SpaStack } from "../lib/spa-stack";
 
 interface Config {
-  readonly certificateArn: string;
+  // readonly certificateArn: string;
   readonly domainName: string;
-  readonly hostedZoneId: string;
+  // readonly hostedZoneId: string;
   readonly httpAuth?: boolean;
   readonly subdomain?: string;
 }
@@ -22,9 +22,7 @@ const mapConfig = (stackName: string): Config => {
     );
 
   return {
-    certificateArn: app.node.tryGetContext(env)["CertificateARN"],
     domainName: app.node.tryGetContext(env)["DomainName"],
-    hostedZoneId: app.node.tryGetContext(env)["HostedZoneId"],
     httpAuth: app.node.tryGetContext(env)["HTTPAuth"],
     subdomain: app.node.tryGetContext(env)[stackName]["Subdomain"],
   };
@@ -38,13 +36,16 @@ new CertifiedDomainStack(app, "CertifiedDomainStack", {
   subdomain: mapConfig("CertifiedDomainStack").subdomain,
 });
 
-const spaStackProps = {
+new SpaStack(app, "LandingPageStack", {
   env: {
     region: "ca-central-1",
   },
   ...mapConfig("LandingPageStack"),
-};
+});
 
-new SpaStack(app, "LandingPageStack", spaStackProps);
-
-new SpaStack(app, "WebAppStack", spaStackProps);
+new SpaStack(app, "WebAppStack", {
+  env: {
+    region: "ca-central-1",
+  },
+  ...mapConfig("WebAppStack"),
+});
