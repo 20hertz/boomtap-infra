@@ -87,13 +87,23 @@ Now we’ve delegated the <subdomain> of <domain_apex> to our new AWS account
 
 - bootstrap the stack with `--profile <PROFILE_CREATED_ABOVE>`
 - deploy the stack
-- Copy the ARN for the applicationDeployerRole
+- Set the ARN for the CDKDeployerRole as a repository-level secret
+
+```
+gh secret set STAGING_DEPLOYER_ROLE_ARN
+```
+
+- Do the same in the projects that are depending on the WebsiteDeployerRole
 
 ### 8. Go to Infrastructure stack
 
-- Create a repo secret in GitHub and paste the above ARN as the value
-- Assign this secret to _role-to-assume_ in the github workflow
 - bootstrap the stack
+- deploy the CertifiedDomainsStack
+- In console, head over to the new Hosted Zone
+- Copy the value for the NS record
+- Head over to the account (Prod) that owns the domain apex
+- update the matching record with the copied NS values
+- deploy everything else
 
 ## References
 

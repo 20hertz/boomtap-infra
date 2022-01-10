@@ -55,7 +55,7 @@ export class OIDCProviderStack extends Stack {
               effect: Effect.ALLOW,
               actions: [
                 "sts:AssumeRole",
-                // try without
+                // in trial without
                 // "route53:GetHostedZone"
               ],
               resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
@@ -76,7 +76,8 @@ export class OIDCProviderStack extends Stack {
         gitHubOIDCProvider.openIdConnectProviderArn,
         {
           StringLike: {
-            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap:ref:refs/heads/develop`,
+            // "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap:ref:refs/heads/develop`,
+            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap*`,
           },
         }
       ),
@@ -84,13 +85,14 @@ export class OIDCProviderStack extends Stack {
         AppDeploymentPolicy: new PolicyDocument({
           assignSids: true,
           statements: [
-            new PolicyStatement({
-              effect: Effect.ALLOW,
-              actions: ["sts:AssumeRole"],
-              resources: [
-                `arn:aws:iam::${this.account}:role/WebsiteDeployerRole`,
-              ],
-            }),
+            // in trial without
+            // new PolicyStatement({
+            //   effect: Effect.ALLOW,
+            //   actions: ["sts:AssumeRole"],
+            //   resources: [
+            //     `arn:aws:iam::${this.account}:role/WebsiteDeployerRole`,
+            //   ],
+            // }),
             new PolicyStatement({
               effect: Effect.ALLOW,
               actions: ["cloudfront:CreateInvalidation"],

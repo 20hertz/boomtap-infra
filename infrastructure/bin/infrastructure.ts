@@ -4,9 +4,7 @@ import { CertifiedDomainStack } from "../lib/certificate-stack";
 import { SpaStack } from "../lib/spa-stack";
 
 interface Config {
-  // readonly certificateArn: string;
   readonly domainName: string;
-  // readonly hostedZoneId: string;
   readonly httpAuth?: boolean;
   readonly subdomain?: string;
 }
