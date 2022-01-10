@@ -1,9 +1,10 @@
-import { CfnOutput, Stack, StackProps } from "aws-cdk-lib";
+import { Stack, StackProps } from "aws-cdk-lib";
 import {
   CertificateValidation,
   DnsValidatedCertificate,
 } from "aws-cdk-lib/aws-certificatemanager";
 import { HostedZone } from "aws-cdk-lib/aws-route53";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Construct } from "constructs";
 
 interface CertifiedDomainProps extends StackProps {
@@ -19,9 +20,10 @@ export class CertifiedDomainStack extends Stack {
       zoneName: props.domainName,
     });
 
-    new CfnOutput(this, "HostedZoneID", {
-      value: hostedZone.hostedZoneId,
-      description: "This value is required in SPA stack configuration",
+    new StringParameter(this, "HostedZoneIdSsmParam", {
+      parameterName: "Hosted_Zone_ID",
+      description: "The Route 53 hosted zone id for this account",
+      stringValue: hostedZone.hostedZoneId,
     });
 
     const certificate = new DnsValidatedCertificate(this, "TLSCertificate", {
@@ -32,9 +34,10 @@ export class CertifiedDomainStack extends Stack {
       validation: CertificateValidation.fromDns(hostedZone),
     });
 
-    new CfnOutput(this, "Certificate ARN", {
-      value: certificate.certificateArn,
-      description: "This value is required in SPA stack configuration",
+    new StringParameter(this, "CertificateArnSsmParam", {
+      parameterName: "Certificate_ARN",
+      description: `The TLS certificate ARN for the domains in the hosted zone ${hostedZone.hostedZoneId}`,
+      stringValue: certificate.certificateArn,
     });
   }
 }
