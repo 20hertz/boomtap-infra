@@ -17,7 +17,7 @@ import {
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Metric } from "aws-cdk-lib/aws-cloudwatch";
-import { Function, IVersion } from "aws-cdk-lib/aws-lambda";
+import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { SSMParameterReader } from "./ssm-param-reader";
 
 export interface SpaStackProps extends StackProps {
@@ -48,10 +48,26 @@ export class SpaStack extends Stack {
       }
     );
 
-    new SpaConstruct(this, "SpaConstruct", {
-      hostedZoneId: hostedZoneIdReader.getParameterValue(),
-      certificateArn: certificateArnReader.getParameterValue(),
-      ...props,
+    const { distribution, sourceBucket } = new SpaConstruct(
+      this,
+      "SpaConstruct",
+      {
+        hostedZoneId: hostedZoneIdReader.getParameterValue(),
+        certificateArn: certificateArnReader.getParameterValue(),
+        ...props,
+      }
+    );
+
+    new StringParameter(this, "WebsiteBucketSsmParam", {
+      parameterName: `${name}_Bucket`,
+      description: "Name of the S3 bucket containing the website assets",
+      stringValue: sourceBucket.bucketName,
+    });
+
+    new StringParameter(this, "DistributionSsmParam", {
+      parameterName: `${name}_Distribution_ID`,
+      description: "CloudFront distribution ID",
+      stringValue: distribution.distributionId,
     });
   }
 }
@@ -62,6 +78,9 @@ export interface SpaConstructProps extends SpaStackProps {
 }
 
 class SpaConstruct extends Construct {
+  public readonly sourceBucket: s3.Bucket;
+  public readonly distribution: CloudFrontWebDistribution;
+
   constructor(scope: Stack, name: string, props: SpaConstructProps) {
     super(scope, name);
 
@@ -84,7 +103,7 @@ class SpaConstruct extends Construct {
       { comment: `OAI for ${name}` }
     );
 
-    const sourceBucket = new s3.Bucket(this, "SiteBucket", {
+    this.sourceBucket = new s3.Bucket(this, "SiteBucket", {
       autoDeleteObjects: true,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       publicReadAccess: false,
@@ -92,10 +111,10 @@ class SpaConstruct extends Construct {
       websiteIndexDocument: "index.html",
     });
 
-    sourceBucket.addToResourcePolicy(
+    this.sourceBucket.addToResourcePolicy(
       new iam.PolicyStatement({
         actions: ["s3:GetObject"],
-        resources: [sourceBucket.arnForObjects("*")],
+        resources: [this.sourceBucket.arnForObjects("*")],
         principals: [
           new iam.CanonicalUserPrincipal(
             cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId
@@ -145,7 +164,7 @@ class SpaConstruct extends Construct {
         }
       : { isDefaultBehavior: true };
 
-    const distribution = new CloudFrontWebDistribution(
+    this.distribution = new CloudFrontWebDistribution(
       this,
       "CloudFrontDistribution",
       {
@@ -153,7 +172,7 @@ class SpaConstruct extends Construct {
         originConfigs: [
           {
             s3OriginSource: {
-              s3BucketSource: sourceBucket,
+              s3BucketSource: this.sourceBucket,
               originAccessIdentity: cloudfrontOAI,
             },
             behaviors: [behavior],
@@ -165,7 +184,7 @@ class SpaConstruct extends Construct {
     new route53.ARecord(this, "SiteAliasRecord", {
       recordName: siteDomain,
       target: route53.RecordTarget.fromAlias(
-        new targets.CloudFrontTarget(distribution)
+        new targets.CloudFrontTarget(this.distribution)
       ),
       zone: hostedZone,
     });
@@ -174,8 +193,8 @@ class SpaConstruct extends Construct {
       sources: [
         s3deploy.Source.asset(path.join(__dirname, "..", "placeholder")),
       ],
-      destinationBucket: sourceBucket,
-      distribution,
+      destinationBucket: this.sourceBucket,
+      distribution: this.distribution,
       distributionPaths: ["/*"],
     });
   }

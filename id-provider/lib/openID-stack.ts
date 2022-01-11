@@ -85,14 +85,6 @@ export class OIDCProviderStack extends Stack {
         AppDeploymentPolicy: new PolicyDocument({
           assignSids: true,
           statements: [
-            // in trial without
-            // new PolicyStatement({
-            //   effect: Effect.ALLOW,
-            //   actions: ["sts:AssumeRole"],
-            //   resources: [
-            //     `arn:aws:iam::${this.account}:role/WebsiteDeployerRole`,
-            //   ],
-            // }),
             new PolicyStatement({
               effect: Effect.ALLOW,
               actions: ["cloudfront:CreateInvalidation"],
