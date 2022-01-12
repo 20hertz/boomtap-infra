@@ -68,7 +68,7 @@ export class OIDCProviderStack extends Stack {
     new CfnOutput(this, "CDKDeployerRoleArn", {
       value: cdkDeployerRole.roleArn,
       description:
-        "Copy-paste this ARN next to role-to-assume in the deployment workflow",
+        "Copy-paste this ARN next to role-to-assume in the deployment workflow of your CDK stack",
     });
 
     const websiteDeployerRole = new Role(this, "WebsiteDeployerRole", {
@@ -95,6 +95,11 @@ export class OIDCProviderStack extends Stack {
               actions: ["s3:*"],
               resources: ["*"],
             }),
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              actions: ["ssm:GetParameter"],
+              resources: [`arn:aws:ssm:*:${this.account}:parameter/*`],
+            }),
           ],
         }),
       },
@@ -103,7 +108,7 @@ export class OIDCProviderStack extends Stack {
     new CfnOutput(this, "WebsiteDeployerRoleArn", {
       value: websiteDeployerRole.roleArn,
       description:
-        "Copy-paste this ARN next to role-to-assume in the deployment workflow",
+        "Copy-paste this ARN next to role-to-assume in the deployment workflow of the apps",
     });
   }
 }

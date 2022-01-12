@@ -88,15 +88,6 @@ class SpaConstruct extends Construct {
       ? props.subdomain + "." + props.domainName
       : props.domainName;
 
-    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
-      this,
-      "HostedZone",
-      {
-        zoneName: siteDomain,
-        hostedZoneId: props.hostedZoneId,
-      }
-    );
-
     const cloudfrontOAI = new OriginAccessIdentity(
       this,
       "OriginAccessIdentity",
@@ -178,6 +169,15 @@ class SpaConstruct extends Construct {
             behaviors: [behavior],
           },
         ],
+      }
+    );
+
+    const hostedZone = route53.HostedZone.fromHostedZoneAttributes(
+      this,
+      "HostedZone",
+      {
+        zoneName: siteDomain,
+        hostedZoneId: props.hostedZoneId,
       }
     );
 

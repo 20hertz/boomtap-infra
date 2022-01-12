@@ -93,7 +93,7 @@ Now we’ve delegated the <subdomain> of <domain_apex> to our new AWS account
 gh secret set STAGING_DEPLOYER_ROLE_ARN
 ```
 
-- Do the same in the projects that are depending on the WebsiteDeployerRole
+- Do the same about WebsiteDeployerRole in the repos depending upon it
 
 ### 8. Go to Infrastructure stack
 
