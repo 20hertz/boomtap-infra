@@ -57,11 +57,11 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-          aws-region: ca-central-1
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@master
+      #   with:
+      #     role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+      #     aws-region: ca-central-1
 
       - name: Use Node.js and cache modules
         uses: actions/setup-node@v2
@@ -92,12 +92,11 @@ jobs:
     steps:
       - name: Configure AWS credentials
         # env:
-        #   DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
+        #     DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::925901147548:role/OIDCProviderStack-CDKDeployerRole462AEC29-1G1L0OOABWYBG
+          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
           aws-region: ca-central-1
-        # run: echo $DEPLOYER_ROLE_ARN
 
       - name: Synth infrastructure stack
         run: yarn cdk synth --all --context config=staging
