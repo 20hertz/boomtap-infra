@@ -87,7 +87,7 @@ jobs:
       - name: Configure AWS credentials
         env:
           DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
-        uses: aws-actions/configure-aws-credentials@master
+        # uses: aws-actions/configure-aws-credentials@master
         run: echo $DEPLOYER_ROLE_ARN
       #   with:
       #     role-to-assume: "${ DEPLOYER_ROLE_ARN }"
