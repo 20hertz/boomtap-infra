@@ -88,16 +88,17 @@ jobs:
         env:
           DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
         uses: aws-actions/configure-aws-credentials@master
-        with:
-          role-to-assume: "${ DEPLOYER_ROLE_ARN }"
-          aws-region: ca-central-1
+        run: echo $DEPLOYER_ROLE_ARN
+      #   with:
+      #     role-to-assume: "${ DEPLOYER_ROLE_ARN }"
+      #     aws-region: ca-central-1
 
-      - name: Synth infrastructure stack
-        run: yarn cdk synth --all --context config=staging
+      # - name: Synth infrastructure stack
+      #   run: yarn cdk synth --all --context config=staging
 
-      - name: Deploy infrastructure stack
-        if: github.ref == 'refs/heads/staging'
-        run: yarn cdk deploy --all --context config=staging --require-approval never
+      # - name: Deploy infrastructure stack
+      #   if: github.ref == 'refs/heads/staging'
+      #   run: yarn cdk deploy --all --context config=staging --require-approval never
 
   deploy-prod:
     name: Deploy to Production
