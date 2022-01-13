@@ -89,6 +89,10 @@ jobs:
         with:
           role-to-assume: ${{ secrets.DEPLOYER_ROLE_ARN }}
           aws-region: ca-central-1
+
+      - name: Print role ARN
+        run: echo ${{ secrets.DEPLOYER_ROLE_ARN }}
+
       - name: Synth infrastructure stack
         run: yarn cdk synth --all --context config=staging
 
