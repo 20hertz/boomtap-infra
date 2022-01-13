@@ -118,7 +118,7 @@ jobs:
           DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: ${ DEPLOYER_ROLE_ARN }
+          role-to-assume: "${ DEPLOYER_ROLE_ARN }"
           aws-region: ca-central-1
 
       - name: Synth infrastructure stack
