@@ -4,10 +4,48 @@ on:
   push:
     branches:
       - staging
-      # - main
+  workflow_dispatch:
 
 jobs:
-  deploy-infrastructure:
+  # deploy-infrastructure:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: infrastructure
+  #   permissions:
+  #     id-token: write
+  #     contents: read
+  #   steps:
+  #     - name: Clone the repository
+  #       uses: actions/checkout@v2
+
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@master
+  #       with:
+  #         role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+  #         aws-region: ca-central-1
+
+  #     - name: Use Node.js and cache modules
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 16
+  #         cache: "yarn"
+  #         cache-dependency-path: ./infrastructure/yarn.lock
+
+  #     - name: Install project dependencies
+  #       run: yarn install
+
+  #     - name: Transpile lambda handlers to JS
+  #       run: yarn build lambdas/index.ts
+
+  #     - name: Synth infrastructure stack
+  #       run: yarn cdk synth --all --context config=staging
+
+  #     - name: Deploy infrastructure stack
+  #       if: github.ref == 'refs/heads/staging'
+  #       run: yarn cdk deploy --all --context config=staging --require-approval never
+
+  Build:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -18,12 +56,6 @@ jobs:
     steps:
       - name: Clone the repository
         uses: actions/checkout@v2
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-          aws-region: ca-central-1
 
       - name: Use Node.js and cache modules
         uses: actions/setup-node@v2
@@ -38,9 +70,54 @@ jobs:
       - name: Transpile lambda handlers to JS
         run: yarn build lambdas/index.ts
 
+  DeployStaging:
+    name: Deploy to Staging
+    if: github.event.ref == 'refs/heads/staging'
+    needs: [Build]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infrastructure
+    permissions:
+      id-token: write
+      contents: read
+    environment:
+      name: Staging
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ secrets.DEPLOYER_ROLE_ARN }}
+          aws-region: ca-central-1
       - name: Synth infrastructure stack
         run: yarn cdk synth --all --context config=staging
 
       - name: Deploy infrastructure stack
         if: github.ref == 'refs/heads/staging'
         run: yarn cdk deploy --all --context config=staging --require-approval never
+
+  DeployProd:
+    name: Deploy to Production
+    if: github.event.ref == 'refs/heads/main'
+    needs: [Build]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infrastructure
+    permissions:
+      id-token: write
+      contents: read
+    environment:
+      name: Production
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: ${{ secrets.DEPLOYER_ROLE_ARN }}
+          aws-region: ca-central-1
+      - name: Synth infrastructure stack
+        run: yarn cdk synth --all --context config=prod
+
+      - name: Deploy infrastructure stack
+        if: github.ref == 'refs/heads/staging'
+        run: yarn cdk deploy --all --context config=prod --require-approval never

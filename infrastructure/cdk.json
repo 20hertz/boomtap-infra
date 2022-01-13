@@ -30,6 +30,16 @@
       "CertifiedDomainStack": {
         "Subdomain": "feed"
       }
+    },
+    "prod": {
+      "DomainName": "boomtap.io",
+      "LandingPageStack": {
+        "Subdomain": "feed"
+      },
+      "WebAppStack": {},
+      "CertifiedDomainStack": {
+        "Subdomain": "feed"
+      }
     }
   }
 }
