@@ -85,20 +85,20 @@ jobs:
       name: Staging
     steps:
       - name: Configure AWS credentials
-        env:
-          DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
-        # uses: aws-actions/configure-aws-credentials@master
-        run: echo $DEPLOYER_ROLE_ARN
-      #   with:
-      #     role-to-assume: "${ DEPLOYER_ROLE_ARN }"
-      #     aws-region: ca-central-1
+        # env:
+        #   DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: arn:aws:iam::925901147548:role/OIDCProviderStack-CDKDeployerRole462AEC29-1G1L0OOABWYBG
+          aws-region: ca-central-1
+        # run: echo $DEPLOYER_ROLE_ARN
 
-      # - name: Synth infrastructure stack
-      #   run: yarn cdk synth --all --context config=staging
+      - name: Synth infrastructure stack
+        run: yarn cdk synth --all --context config=staging
 
-      # - name: Deploy infrastructure stack
-      #   if: github.ref == 'refs/heads/staging'
-      #   run: yarn cdk deploy --all --context config=staging --require-approval never
+      - name: Deploy infrastructure stack
+        if: github.ref == 'refs/heads/staging'
+        run: yarn cdk deploy --all --context config=staging --require-approval never
 
   deploy-prod:
     name: Deploy to Production
