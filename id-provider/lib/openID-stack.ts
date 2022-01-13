@@ -53,11 +53,7 @@ export class OIDCProviderStack extends Stack {
           statements: [
             new PolicyStatement({
               effect: Effect.ALLOW,
-              actions: [
-                "sts:AssumeRole",
-                // in trial without
-                // "route53:GetHostedZone"
-              ],
+              actions: ["sts:AssumeRole"],
               resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
             }),
           ],
