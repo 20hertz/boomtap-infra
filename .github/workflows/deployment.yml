@@ -39,8 +39,8 @@ jobs:
         run: yarn build lambdas/index.ts
 
       - name: Synth infrastructure stack
-        run: yarn cdk synth --all --context config=staging
+        run: yarn cdk synth LandingPageStack WebAppStack --context config=staging
 
       - name: Deploy infrastructure stack
         if: github.ref == 'refs/heads/staging'
-        run: yarn cdk deploy --all --context config=staging --require-approval never
+        run: yarn cdk deploy LandingPageStack WebAppStack --context config=staging --require-approval never
