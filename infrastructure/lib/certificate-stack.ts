@@ -26,22 +26,6 @@ export class CertifiedDomainStack extends Stack {
       stringValue: hostedZone.hostedZoneId,
     });
 
-    // const isSecondLevelDomain = props.domainName === "boomtap.io";
-
-    // if (!isSecondLevelDomain && hostedZone.hostedZoneNameServers) {
-    //   const domainSplit = props.domainName.split(".");
-    //   domainSplit.shift();
-    //   const sldZone = HostedZone.fromLookup(this, "SLD Zone", {
-    //     domainName: domainSplit.join("."),
-    //   });
-
-    //   new NsRecord(this, "NameServerRecord", {
-    //     recordName: props.domainName,
-    //     values: hostedZone.hostedZoneNameServers,
-    //     zone: sldZone,
-    //   });
-    // }
-
     const certificate = new DnsValidatedCertificate(this, "TLSCertificate", {
       hostedZone,
       domainName: props.domainName,
