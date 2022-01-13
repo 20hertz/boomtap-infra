@@ -76,8 +76,8 @@ export class OIDCProviderStack extends Stack {
         gitHubOIDCProvider.openIdConnectProviderArn,
         {
           StringLike: {
-            // "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap:ref:refs/heads/develop`,
-            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap*`,
+            // "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap*`,
+            "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap*:ref:refs/heads/${props.gitHubBranchName}`,
           },
         }
       ),

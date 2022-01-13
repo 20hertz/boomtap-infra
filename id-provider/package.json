@@ -7,9 +7,11 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "bootstrap:staging": "cdk bootstrap --context config=staging --profile backstage",
+    "bootstrap:prod": "cdk bootstrap --context config=prod --profile prod",
     "deploy:staging": "cdk deploy --context config=staging --profile backstage",
-    "destroy:staging": "cdk destroy --context config=staging --profile backstage",
-    "bootstrap:staging": "cdk bootstrap --context config=staging --profile backstage"
+    "deploy:prod": "cdk deploy --context config=prod --profile prod",
+    "destroy:staging": "cdk destroy --context config=staging --profile backstage"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
