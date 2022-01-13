@@ -87,10 +87,13 @@ jobs:
       - name: Print role ARN
         run: echo ${{ secrets.DEPLOYER_ROLE_ARN }}
 
+      - name: Print role ARN again
+        run: echo "${{ secrets.DEPLOYER_ROLE_ARN }}"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: ${{ secrets.DEPLOYER_ROLE_ARN }}
+          role-to-assume: "arn:aws:iam::925901147548:role/OIDCProviderStack-CDKDeployerRole462AEC29-1G1L0OOABWYBG"
           aws-region: ca-central-1
 
       - name: Synth infrastructure stack
