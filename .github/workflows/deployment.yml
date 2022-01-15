@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -28,23 +28,6 @@ jobs:
 
       - name: Transpile lambda handlers to JS
         run: yarn build lambdas/index.ts
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [build]
-    defaults:
-      run:
-        working-directory: infrastructure
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: Use Node.js and cache modules
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          cache: "yarn"
-          # cache-dependency-path: ./infrastructure/yarn.lock
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/staging'
