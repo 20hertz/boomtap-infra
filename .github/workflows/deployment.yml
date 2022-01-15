@@ -39,6 +39,13 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Use Node.js and cache modules
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: "yarn"
+          cache-dependency-path: ./infrastructure/yarn.lock
+
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/staging'
         uses: aws-actions/configure-aws-credentials@master
