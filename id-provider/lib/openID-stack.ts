@@ -78,7 +78,7 @@ export class OIDCProviderStack extends Stack {
         }
       ),
       inlinePolicies: {
-        AppDeploymentPolicy: new PolicyDocument({
+        WebAppDeploymentPolicy: new PolicyDocument({
           assignSids: true,
           statements: [
             new PolicyStatement({
