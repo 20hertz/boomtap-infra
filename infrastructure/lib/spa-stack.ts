@@ -19,6 +19,7 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Metric } from "aws-cdk-lib/aws-cloudwatch";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { SSMParameterReader } from "./ssm-param-reader";
+import { HttpsRedirect } from "aws-cdk-lib/aws-route53-patterns";
 
 export interface SpaStackProps extends StackProps {
   domainName: string;
@@ -84,7 +85,9 @@ class SpaConstruct extends Construct {
   constructor(scope: Stack, name: string, props: SpaConstructProps) {
     super(scope, name);
 
-    const siteDomain = props.subdomain
+    const hasSubdomain = Boolean(props.subdomain);
+
+    const siteDomain = hasSubdomain
       ? props.subdomain + "." + props.domainName
       : props.domainName;
 
@@ -197,5 +200,13 @@ class SpaConstruct extends Construct {
       distribution: this.distribution,
       distributionPaths: ["/*"],
     });
+
+    if (!hasSubdomain) {
+      new HttpsRedirect(this, "Redirect", {
+        zone: hostedZone,
+        recordNames: [`www${props.domainName}`],
+        targetDomain: props.domainName,
+      });
+    }
   }
 }

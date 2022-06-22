@@ -105,6 +105,12 @@ gh secret set STAGING_DEPLOYER_ROLE_ARN
 - update the matching record with the copied NS values
 - deploy everything else
 
+### Other parts of the infra that aren't covered by these IaC models
+
+- Creating and verifying identities in Amazon SES (email)
+  - Just follow [this guide](https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html) for now.
+- You need the OrganizationAccountAccessRole to access the environment accounts. See https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html
+
 ## References
 
 - https://dev.to/aws-builders/deploying-aws-cdk-apps-using-short-lived-credentials-and-github-actions-59g6

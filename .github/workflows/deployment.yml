@@ -1,10 +1,15 @@
 name: Infra deployment
 
 on:
-  push:
-    branches:
-      - staging
   workflow_dispatch:
+    inputs:
+      choice:
+        type: choice
+        description: Stack Name
+        options:
+          - CertifiedDomainStack
+          - WebAppStack
+          - LandingPageStack
 
 jobs:
   deploy:
@@ -45,7 +50,7 @@ jobs:
 
       - name: Deploy infrastructure stack
         if: github.ref == 'refs/heads/staging'
-        run: yarn cdk deploy --all --context config=staging --require-approval never
+        run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=staging --require-approval never
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/main'
@@ -60,7 +65,7 @@ jobs:
 
       - name: Deploy infrastructure stack
         if: github.ref == 'refs/heads/main'
-        run: yarn cdk deploy --all --context config=prod --require-approval never
+        run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=prod --require-approval never
 
   # deploy-staging:
   #   name: Deploy to Staging
