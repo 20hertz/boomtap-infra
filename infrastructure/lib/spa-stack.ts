@@ -85,11 +85,9 @@ class SpaConstruct extends Construct {
   constructor(scope: Stack, name: string, props: SpaConstructProps) {
     super(scope, name);
 
-    const hasSubdomain = Boolean(props.subdomain);
-
-    const siteDomain = hasSubdomain
-      ? props.subdomain + "." + props.domainApex
-      : props.domainApex;
+    const siteDomain = [props.subdomain, props.domainApex]
+      .filter(Boolean)
+      .join(".");
 
     const cloudfrontOAI = new OriginAccessIdentity(
       this,
@@ -201,7 +199,7 @@ class SpaConstruct extends Construct {
       distributionPaths: ["/*"],
     });
 
-    if (!hasSubdomain) {
+    if (!props.subdomain) {
       new HttpsRedirect(this, "Redirect", {
         zone: hostedZone,
         recordNames: [`www.${props.domainApex}`],

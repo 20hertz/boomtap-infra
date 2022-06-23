@@ -26,7 +26,7 @@ const mapConfig = (stackName: string): Config => {
   return {
     domainApex: "boomtap.io",
     httpAuth: app.node.tryGetContext(env)["HTTPAuth"],
-    subdomain: `${subdomain}.${environmentSubdomain}` ?? subdomain,
+    subdomain: [subdomain, environmentSubdomain].filter(Boolean).join("."),
   };
 };
 

@@ -22,7 +22,6 @@
     "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
     "staging": {
       "HTTPAuth": true,
-      "DomainName": "backstage.boomtap.io",
       "EnvironmentSubdomain": "backstage",
       "LandingPageStack": {
         "Subdomain": "feed"
@@ -33,7 +32,6 @@
       }
     },
     "prod": {
-      "DomainName": "boomtap.io",
       "LandingPageStack": {
         "Subdomain": "feed"
       },
