@@ -3,6 +3,9 @@ name: Infra deployment
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        type: environment
+        description: Select the environment
       choice:
         type: choice
         description: Stack Name
@@ -14,6 +17,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
     permissions:
       id-token: write
       contents: read
@@ -41,16 +45,16 @@ jobs:
         if: github.ref == 'refs/heads/staging'
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+          role-to-assume: ${{ secrets.DEPLOYER_ROLE_ARN }}
           aws-region: ca-central-1
 
       - name: Synth infrastructure stack
         if: github.ref == 'refs/heads/staging'
-        run: yarn cdk synth --all --context config=staging
+        run: yarn cdk synth --all --context config=${{ github.event.inputs.environment }}
 
       - name: Deploy infrastructure stack
         if: github.ref == 'refs/heads/staging'
-        run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=staging --require-approval never
+        run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=${{ github.event.inputs.environment }} --require-approval never
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/main'
