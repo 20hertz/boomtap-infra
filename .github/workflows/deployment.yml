@@ -3,9 +3,9 @@ name: Infra deployment
 on:
   workflow_dispatch:
     inputs:
-#       environment:
-#         type: environment
-#         description: Select the environment
+      environment:
+        type: environment
+        description: Select the environment
       choice:
         type: choice
         description: Stack Name
@@ -17,7 +17,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-#     environment: ${{ github.event.inputs.environment }}
+    environment: ${{ github.event.inputs.environment }}
 #     environment: staging
     permissions:
       id-token: write
@@ -51,7 +51,8 @@ jobs:
 #           DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+#           role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+          role-to-assume: ${{ secrets.DEPLOYER_ROLE_ARN }}
           aws-region: ca-central-1
 
       - name: Synth infrastructure stack
