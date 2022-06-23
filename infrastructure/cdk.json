@@ -23,6 +23,7 @@
     "staging": {
       "HTTPAuth": true,
       "DomainName": "backstage.boomtap.io",
+      "EnvironmentSubdomain": "backstage",
       "LandingPageStack": {
         "Subdomain": "feed"
       },
