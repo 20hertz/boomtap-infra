@@ -43,6 +43,8 @@ export class OIDCProviderStack extends Stack {
         gitHubOIDCProvider.openIdConnectProviderArn,
         {
           StringLike: {
+            // TODO: try this!
+            // "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap-infra:environment:Staging:ref:refs/heads/${props.gitHubBranchName}`,
             "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap-infra:ref:refs/heads/${props.gitHubBranchName}`,
           },
         }
@@ -72,7 +74,6 @@ export class OIDCProviderStack extends Stack {
         gitHubOIDCProvider.openIdConnectProviderArn,
         {
           StringLike: {
-            // "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap*`,
             "token.actions.githubusercontent.com:sub": `repo:${githubUsername}/boomtap*:ref:refs/heads/${props.gitHubBranchName}`,
           },
         }

@@ -31,7 +31,7 @@
         "Subdomain": "feed"
       }
     },
-    "prod": {
+    "production": {
       "LandingPageStack": {
         "Subdomain": "feed"
       },
