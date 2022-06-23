@@ -4,7 +4,7 @@ import { CertifiedDomainStack } from "../lib/certificate-stack";
 import { SpaStack } from "../lib/spa-stack";
 
 interface Config {
-  readonly domainName: string;
+  readonly domainApex: string;
   readonly httpAuth?: boolean;
   readonly subdomain?: string;
 }
@@ -19,10 +19,14 @@ const mapConfig = (stackName: string): Config => {
       "Context variable missing on CDK command. Pass in as `-c config=XXX`"
     );
 
+  const environmentSubdomain =
+    app.node.tryGetContext(env)["EnvironmentSubdomain"];
+  const subdomain = app.node.tryGetContext(env)[stackName]["Subdomain"];
+
   return {
-    domainName: app.node.tryGetContext(env)["DomainName"],
+    domainApex: "boomtap.io",
     httpAuth: app.node.tryGetContext(env)["HTTPAuth"],
-    subdomain: app.node.tryGetContext(env)[stackName]["Subdomain"],
+    subdomain: [subdomain, environmentSubdomain].filter(Boolean).join("."),
   };
 };
 
@@ -30,7 +34,7 @@ new CertifiedDomainStack(app, "CertifiedDomainStack", {
   env: {
     region: "us-east-1",
   },
-  domainName: mapConfig("CertifiedDomainStack").domainName,
+  domainApex: mapConfig("CertifiedDomainStack").domainApex,
   subdomain: mapConfig("CertifiedDomainStack").subdomain,
 });
 

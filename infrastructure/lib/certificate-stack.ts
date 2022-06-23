@@ -8,7 +8,7 @@ import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Construct } from "constructs";
 
 interface CertifiedDomainProps extends StackProps {
-  domainName: string;
+  domainApex: string;
   subdomain?: string;
 }
 
@@ -17,7 +17,7 @@ export class CertifiedDomainStack extends Stack {
     super(scope, id, props);
 
     const hostedZone = new PublicHostedZone(this, "HostedZone", {
-      zoneName: props.domainName,
+      zoneName: props.domainApex,
     });
 
     new StringParameter(this, "HostedZoneIdSsmParam", {
@@ -28,9 +28,9 @@ export class CertifiedDomainStack extends Stack {
 
     const certificate = new DnsValidatedCertificate(this, "TLSCertificate", {
       hostedZone,
-      domainName: props.domainName,
+      domainName: props.domainApex,
       subjectAlternativeNames:
-        [`${props.subdomain}.${props.domainName}`] ?? undefined,
+        [`${props.subdomain}.${props.domainApex}`] ?? undefined,
       validation: CertificateValidation.fromDns(hostedZone),
     });
 

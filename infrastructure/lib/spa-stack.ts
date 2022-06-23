@@ -19,9 +19,10 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import { Metric } from "aws-cdk-lib/aws-cloudwatch";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { SSMParameterReader } from "./ssm-param-reader";
+import { HttpsRedirect } from "aws-cdk-lib/aws-route53-patterns";
 
 export interface SpaStackProps extends StackProps {
-  domainName: string;
+  domainApex: string;
   httpAuth?: boolean;
   subdomain?: string;
 }
@@ -84,9 +85,9 @@ class SpaConstruct extends Construct {
   constructor(scope: Stack, name: string, props: SpaConstructProps) {
     super(scope, name);
 
-    const siteDomain = props.subdomain
-      ? props.subdomain + "." + props.domainName
-      : props.domainName;
+    const siteDomain = [props.subdomain, props.domainApex]
+      .filter(Boolean)
+      .join(".");
 
     const cloudfrontOAI = new OriginAccessIdentity(
       this,
@@ -197,5 +198,13 @@ class SpaConstruct extends Construct {
       distribution: this.distribution,
       distributionPaths: ["/*"],
     });
+
+    if (!props.subdomain) {
+      new HttpsRedirect(this, "Redirect", {
+        zone: hostedZone,
+        recordNames: [`www.${props.domainApex}`],
+        targetDomain: props.domainApex,
+      });
+    }
   }
 }
