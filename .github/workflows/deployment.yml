@@ -3,9 +3,9 @@ name: Infra deployment
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        type: environment
-        description: Select the environment
+#       environment:
+#         type: environment
+#         description: Select the environment
       choice:
         type: choice
         description: Stack Name
@@ -18,7 +18,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 #     environment: ${{ github.event.inputs.environment }}
-    environment: staging
+#     environment: staging
     permissions:
       id-token: write
       contents: read
@@ -56,11 +56,12 @@ jobs:
 
       - name: Synth infrastructure stack
         if: github.ref == 'refs/heads/staging'
-        run: yarn cdk synth --all --context config=${{ github.event.inputs.environment }}
+        run: yarn cdk synth --all --context config=staging
 
       - name: Deploy infrastructure stack
         if: github.ref == 'refs/heads/staging'
-        run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=${{ github.event.inputs.environment }} --require-approval never
+        run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=staging --require-approval never
+#         run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=${{ github.event.inputs.environment }} --require-approval never
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/main'
