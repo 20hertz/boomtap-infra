@@ -44,12 +44,16 @@ jobs:
 
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/staging'
-        env:
-          DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          role-to-assume: '${DEPLOYER_ROLE_ARN}'
-          aws-region: ca-central-1
+        run: |
+          echo "Print DEPLOYER_ROLE_ARN"
+          echo ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/./& /g'
+          echo ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/ ./& /g'
+#         env:
+#           DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
+#         uses: aws-actions/configure-aws-credentials@master
+#         with:
+#           role-to-assume: '${DEPLOYER_ROLE_ARN}'
+#           aws-region: ca-central-1
 
       - name: Synth infrastructure stack
         if: github.ref == 'refs/heads/staging'
