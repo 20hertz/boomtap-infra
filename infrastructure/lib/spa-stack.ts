@@ -22,7 +22,7 @@ import { SSMParameterReader } from "./ssm-param-reader";
 import { HttpsRedirect } from "aws-cdk-lib/aws-route53-patterns";
 
 export interface SpaStackProps extends StackProps {
-  domainName: string;
+  domainApex: string;
   httpAuth?: boolean;
   subdomain?: string;
 }
@@ -88,8 +88,8 @@ class SpaConstruct extends Construct {
     const hasSubdomain = Boolean(props.subdomain);
 
     const siteDomain = hasSubdomain
-      ? props.subdomain + "." + props.domainName
-      : props.domainName;
+      ? props.subdomain + "." + props.domainApex
+      : props.domainApex;
 
     const cloudfrontOAI = new OriginAccessIdentity(
       this,
@@ -204,8 +204,8 @@ class SpaConstruct extends Construct {
     if (!hasSubdomain) {
       new HttpsRedirect(this, "Redirect", {
         zone: hostedZone,
-        recordNames: [`www${props.domainName}`],
-        targetDomain: props.domainName,
+        recordNames: [`www.${props.domainApex}`],
+        targetDomain: props.domainApex,
       });
     }
   }
