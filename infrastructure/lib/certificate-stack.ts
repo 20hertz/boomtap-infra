@@ -1,4 +1,4 @@
-import { Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, Stack, StackProps } from "aws-cdk-lib";
 import {
   CertificateValidation,
   DnsValidatedCertificate,
@@ -29,9 +29,15 @@ export class CertifiedDomainStack extends Stack {
     const certificate = new DnsValidatedCertificate(this, "TLSCertificate", {
       hostedZone,
       domainName: props.domain,
-      subjectAlternativeNames:
-        [`${props.subdomain}.${props.domain}`] ?? undefined,
+      // subjectAlternativeNames:
+      //   [`${props.subdomain}.${props.domain}`] ?? undefined,
       validation: CertificateValidation.fromDns(hostedZone),
+    });
+
+    new CfnOutput(this, "certificate", {
+      value: `${props.subdomain}.${props.domain}`,
+      description: "Whats passed to certificate manager",
+      // exportName: 'avatarsBucket',
     });
 
     new StringParameter(this, "CertificateArnSsmParam", {
