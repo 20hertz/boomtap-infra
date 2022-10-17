@@ -25,7 +25,7 @@ const mapConfig = (stackName: string): Config => {
   return {
     domain: environmentDomain,
     httpAuth: app.node.tryGetContext(env)["HTTPAuth"],
-    subdomain: [subdomain, environmentDomain].filter(Boolean).join("."),
+    subdomain,
   };
 };
 
