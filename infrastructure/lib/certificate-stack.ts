@@ -29,8 +29,8 @@ export class CertifiedDomainStack extends Stack {
     const certificate = new DnsValidatedCertificate(this, "TLSCertificate", {
       hostedZone,
       domainName: props.domain,
-      // subjectAlternativeNames:
-      //   [`${props.subdomain}.${props.domain}`] ?? undefined,
+      subjectAlternativeNames:
+        [`${props.subdomain}.${props.domain}`] ?? undefined,
       validation: CertificateValidation.fromDns(hostedZone),
     });
 
