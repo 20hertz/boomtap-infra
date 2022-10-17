@@ -22,7 +22,7 @@ import { SSMParameterReader } from "./ssm-param-reader";
 import { HttpsRedirect } from "aws-cdk-lib/aws-route53-patterns";
 
 export interface SpaStackProps extends StackProps {
-  domainApex: string;
+  domain: string;
   httpAuth?: boolean;
   subdomain?: string;
 }
@@ -85,7 +85,9 @@ class SpaConstruct extends Construct {
   constructor(scope: Stack, name: string, props: SpaConstructProps) {
     super(scope, name);
 
-    const siteDomain = [props.subdomain, props.domainApex]
+    const env = scope.node.tryGetContext("config");
+
+    const siteDomain = [props.subdomain, props.domain]
       .filter(Boolean)
       .join(".");
 
@@ -199,11 +201,11 @@ class SpaConstruct extends Construct {
       distributionPaths: ["/*"],
     });
 
-    if (!props.subdomain) {
+    if (env === "prod" && !props.subdomain) {
       new HttpsRedirect(this, "Redirect", {
         zone: hostedZone,
-        recordNames: [`www.${props.domainApex}`],
-        targetDomain: props.domainApex,
+        recordNames: [`www.${props.domain}`],
+        targetDomain: props.domain,
       });
     }
   }
