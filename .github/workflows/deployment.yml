@@ -33,7 +33,8 @@ jobs:
           SECRET: ${{ secrets.DEPLOYER_ROLE_ARN }}
         run: |
           echo "environment is ${{ github.event.inputs.environment }} / ${{ inputs.environment }}"
-          echo $SECRET | sed 's/./&/g'
+          echo ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/./&/g'
+          echo ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/./& /g' | sed 's/ //g'
 
       # echo ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/./& /g'
 
