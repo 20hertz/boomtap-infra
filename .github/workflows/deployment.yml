@@ -30,10 +30,12 @@ jobs:
 
       - name: greet
         env:
-          SECRET: ${{ secrets.DEPLOYER_ROLE_ARN }}
+          SECRET: ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/ //g'
         run: |
           echo "environment is ${{ github.event.inputs.environment }} / ${{ inputs.environment }}"
-          echo ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/ //g'
+          echo $SECRET
+
+      # echo ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/./& /g'
 
       # - name: Use Node.js and cache modules
       #   uses: actions/setup-node@v2
