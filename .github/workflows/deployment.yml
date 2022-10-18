@@ -33,7 +33,7 @@ jobs:
           SECRET: ${{ secrets.DEPLOYER_ROLE_ARN }}
         run: |
           echo "environment is ${{ github.event.inputs.environment }} / ${{ inputs.environment }}"
-          echo ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/./& /g'
+          echo ${{ secrets.DEPLOYER_ROLE_ARN }} | sed 's/ //g'
 
       # - name: Use Node.js and cache modules
       #   uses: actions/setup-node@v2
