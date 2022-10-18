@@ -34,12 +34,6 @@ export class CertifiedDomainStack extends Stack {
       validation: CertificateValidation.fromDns(hostedZone),
     });
 
-    new CfnOutput(this, "certificate", {
-      value: `${props.subdomain}.${props.domain}`,
-      description: "Whats passed to certificate manager",
-      // exportName: 'avatarsBucket',
-    });
-
     new StringParameter(this, "CertificateArnSsmParam", {
       parameterName: "Certificate_ARN",
       description: `The TLS certificate ARN for the domains in the hosted zone ${hostedZone.hostedZoneId}`,
