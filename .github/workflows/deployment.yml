@@ -30,10 +30,10 @@ jobs:
 
       - name: greet
         env:
-          DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
+          ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
         run: |
           echo "environment is ${{ github.event.inputs.environment }} / ${{ inputs.environment }}"
-          echo DEPLOYER_ROLE_ARN is "$DEPLOYER_ROLE_ARN"
+          echo DEPLOYER_ROLE_ARN is "$ROLE_ARN"
 
       # - name: Use Node.js and cache modules
       #   uses: actions/setup-node@v2
