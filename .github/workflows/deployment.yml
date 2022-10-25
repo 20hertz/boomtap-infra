@@ -39,27 +39,27 @@ jobs:
       - name: Use the value
         run: echo $DEPLOYER_ROLE_ARN
 
-      # - name: Use Node.js and cache modules
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: 16
-      #     cache: "yarn"
-      #     cache-dependency-path: ./infrastructure/yarn.lock
+      - name: Use Node.js and cache modules
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: "yarn"
+          cache-dependency-path: ./infrastructure/yarn.lock
 
-      # - name: Install project dependencies
-      #   run: yarn install
+      - name: Install project dependencies
+        run: yarn install
 
-      # - name: Transpile lambda handlers to JS
-      #   run: yarn build lambdas/index.ts
+      - name: Transpile lambda handlers to JS
+        run: yarn build lambdas/index.ts
 
-      # - name: Configure AWS credentials
-      #   # if: github.ref == 'refs/heads/staging'
-      #   uses: aws-actions/configure-aws-credentials@master
-      #   env:
-      #     DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
-      #   with:
-      #     role-to-assume: $DEPLOYER_ROLE_ARN
-      #     aws-region: ca-central-1
+      - name: Configure AWS credentials
+        # if: github.ref == 'refs/heads/staging'
+        uses: aws-actions/configure-aws-credentials@master
+        # env:
+        #   DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
+        with:
+          role-to-assume: $DEPLOYER_ROLE_ARN
+          aws-region: ca-central-1
 
       # - name: Configure AWS credentials
       #   if: github.ref == 'refs/heads/staging'
