@@ -17,7 +17,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
+    # environment: ${{ github.event.inputs.environment }}
     permissions:
       id-token: write
       contents: read
@@ -28,8 +28,8 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v2
 
-      # - name: Set the environment variable
-      #   run: echo DEPLOYER_ROLE_ARN=${{ secrets.PROD_DEPLOYER_ROLE_ARN }} >> $GITHUB_ENV
+      - name: Set the environment variable
+        run: echo ROLE_TO_ASSUME=${{ secrets.DEPLOYER_ROLE_ARN }} >> $GITHUB_ENV
       #   if: ${{ github.event.inputs.environment }} == 'production'
 
       # - name: Set the environment variable
@@ -55,18 +55,10 @@ jobs:
       - name: Configure AWS credentials
         # if: github.ref == 'refs/heads/staging'
         uses: aws-actions/configure-aws-credentials@master
-        # env:
-        #   DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
         with:
-          role-to-assume: ${{ secrets.DEPLOYER_ROLE_ARN }}
+          # role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+          role-to-assume: $ROLE_TO_ASSUME
           aws-region: ca-central-1
-
-      # - name: Configure AWS credentials
-      #   if: github.ref == 'refs/heads/staging'
-      #   uses: aws-actions/configure-aws-credentials@master
-      #   with:
-      #     role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-      #     aws-region: ca-central-1
 
       # - name: Configure AWS credentials
       #   if: github.ref == 'refs/heads/main'
