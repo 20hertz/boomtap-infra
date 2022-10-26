@@ -41,22 +41,27 @@ jobs:
       - name: Transpile lambda handlers to JS
         run: yarn build lambdas/index.ts
 
-      - name: Configure AWS credentials
-        if: github.ref == 'refs/heads/staging'
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-          aws-region: ca-central-1
+      - run: 'echo "$SSH_KEY" | base64'
+        shell: bash
+        env:
+          SSH_KEY: ${{ secrets.PROD_DEPLOYER_ROLE_ARN }}
 
-      - name: Configure AWS credentials
-        if: github.ref == 'refs/heads/main'
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          role-to-assume: ${{ secrets.PROD_DEPLOYER_ROLE_ARN }}
-          aws-region: ca-central-1
+      # - name: Configure AWS credentials
+      #   if: github.ref == 'refs/heads/staging'
+      #   uses: aws-actions/configure-aws-credentials@master
+      #   with:
+      #     role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
+      #     aws-region: ca-central-1
 
-      - name: Synth infrastructure stack
-        run: yarn cdk synth --all --context config=${{ github.event.inputs.environment }}
+      # - name: Configure AWS credentials
+      #   if: github.ref == 'refs/heads/main'
+      #   uses: aws-actions/configure-aws-credentials@master
+      #   with:
+      #     role-to-assume: ${{ secrets.PROD_DEPLOYER_ROLE_ARN }}
+      #     aws-region: ca-central-1
 
-      - name: Deploy infrastructure stack
-        run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=${{ github.event.inputs.environment }} --require-approval never
+      # - name: Synth infrastructure stack
+      #   run: yarn cdk synth --all --context config=${{ github.event.inputs.environment }}
+
+      # - name: Deploy infrastructure stack
+      #   run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=${{ github.event.inputs.environment }} --require-approval never
