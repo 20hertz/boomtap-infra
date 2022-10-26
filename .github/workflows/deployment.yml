@@ -17,7 +17,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # environment: ${{ github.event.inputs.environment }}
+    environment: ${{ github.event.inputs.environment }}
     permissions:
       id-token: write
       contents: read
@@ -52,28 +52,28 @@ jobs:
       - name: Transpile lambda handlers to JS
         run: yarn build lambdas/index.ts
 
+      - name: Configure AWS credentials
+        # if: github.ref == 'refs/heads/staging'
+        uses: aws-actions/configure-aws-credentials@master
+        # env:
+        #   DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
+        with:
+          role-to-assume: ${{ secrets.DEPLOYER_ROLE_ARN }}
+          aws-region: ca-central-1
+
       # - name: Configure AWS credentials
-      #   # if: github.ref == 'refs/heads/staging'
+      #   if: github.ref == 'refs/heads/staging'
       #   uses: aws-actions/configure-aws-credentials@master
-      #   # env:
-      #   #   DEPLOYER_ROLE_ARN: ${{ secrets.DEPLOYER_ROLE_ARN }}
       #   with:
-      #     role-to-assume: $DEPLOYER_ROLE_ARN
+      #     role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
       #     aws-region: ca-central-1
 
-      - name: Configure AWS credentials
-        if: github.ref == 'refs/heads/staging'
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-          aws-region: ca-central-1
-
-      - name: Configure AWS credentials
-        if: github.ref == 'refs/heads/main'
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          role-to-assume: ${{ secrets.PROD_DEPLOYER_ROLE_ARN }}
-          aws-region: ca-central-1
+      # - name: Configure AWS credentials
+      #   if: github.ref == 'refs/heads/main'
+      #   uses: aws-actions/configure-aws-credentials@master
+      #   with:
+      #     role-to-assume: ${{ secrets.PROD_DEPLOYER_ROLE_ARN }}
+      #     aws-region: ca-central-1
 
       # - name: Synth infrastructure stack
       #   run: yarn cdk synth --all --context config=${{ github.event.inputs.environment }}
