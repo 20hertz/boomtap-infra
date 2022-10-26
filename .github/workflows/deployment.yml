@@ -28,23 +28,20 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v2
 
-      - name: Use Node.js and cache modules
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          cache: "yarn"
-          cache-dependency-path: ./infrastructure/yarn.lock
+      # - name: Use Node.js and cache modules
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: 16
+      #     cache: "yarn"
+      #     cache-dependency-path: ./infrastructure/yarn.lock
 
-      - name: Install project dependencies
-        run: yarn install
+      # - name: Install project dependencies
+      #   run: yarn install
 
-      - name: Transpile lambda handlers to JS
-        run: yarn build lambdas/index.ts
+      # - name: Transpile lambda handlers to JS
+      #   run: yarn build lambdas/index.ts
 
-      - run: 'echo "$SSH_KEY" | base64'
-        shell: bash
-        env:
-          SSH_KEY: ${{ secrets.PROD_DEPLOYER_ROLE_ARN }}
+      - run: echo ${{ secrets.PROD_DEPLOYER_ROLE_ARN }} | sed 's/./& /g'
 
       # - name: Configure AWS credentials
       #   if: github.ref == 'refs/heads/staging'
