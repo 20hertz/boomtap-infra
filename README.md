@@ -83,7 +83,7 @@ region = <REGION>
 
 Now we’ve delegated the <subdomain> of <domain_apex> to our new AWS account
 
-### 7. Go to Deploy Bootstrap stack
+### 7. Go to Bootstrap stack
 
 - bootstrap the stack with `--profile <PROFILE_CREATED_ABOVE>`
 - deploy the stack

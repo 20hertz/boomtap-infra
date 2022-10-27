@@ -6,7 +6,7 @@ on:
       environment:
         type: environment
         description: Select the environment
-      choice:
+      stack:
         type: choice
         description: Stack Name
         options:
@@ -17,6 +17,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # environment: ${{ github.event.inputs.environment }}
     permissions:
       id-token: write
       contents: read
@@ -40,6 +41,8 @@ jobs:
       - name: Transpile lambda handlers to JS
         run: yarn build lambdas/index.ts
 
+      # - run: echo ${{ secrets.PROD_DEPLOYER_ROLE_ARN }} | sed 's/./& /g'
+
       - name: Configure AWS credentials
         if: github.ref == 'refs/heads/staging'
         uses: aws-actions/configure-aws-credentials@master
@@ -58,4 +61,4 @@ jobs:
         run: yarn cdk synth --all --context config=${{ github.event.inputs.environment }}
 
       - name: Deploy infrastructure stack
-        run: yarn cdk deploy ${{ github.event.inputs.choice }} --context config=${{ github.event.inputs.environment }} --require-approval never
+        run: yarn cdk deploy ${{ github.event.inputs.stack }} --context config=${{ github.event.inputs.environment }} --require-approval never
