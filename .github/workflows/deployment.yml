@@ -47,8 +47,7 @@ jobs:
         if: github.ref == 'refs/heads/staging'
         uses: aws-actions/configure-aws-credentials@master
         with:
-          # role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
-          role-to-assume: ${{ secrets.DEPLOYER_ROLE_ARN }}
+          role-to-assume: ${{ secrets.STAGING_DEPLOYER_ROLE_ARN }}
           aws-region: ca-central-1
 
       - name: Configure AWS credentials
