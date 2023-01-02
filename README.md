@@ -111,6 +111,10 @@ gh secret set STAGING_DEPLOYER_ROLE_ARN
   - Just follow [this guide](https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html) for now.
 - You need the OrganizationAccountAccessRole to access the environment accounts. See https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html
 
+### Switching accounts
+
+Role: OrganizationAccountAccessRole
+
 ## References
 
 - https://dev.to/aws-builders/deploying-aws-cdk-apps-using-short-lived-credentials-and-github-actions-59g6
