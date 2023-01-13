@@ -7,26 +7,25 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "bootstrap:staging": "yarn cdk bootstrap -c config=staging --profile backstage",
-    "bootstrap:prod": "yarn cdk bootstrap -c config=prod --profile prod",
-    "deploy:staging": "yarn build lambdas/index.ts && cdk deploy --all -c config=staging --profile backstage --require-approval never",
-    "destroy:all": "cdk destroy --all -c config=staging --profile backstage",
-    "deploy:certificate:staging": "cdk deploy CertifiedDomainStack -c config=staging --profile backstage",
-    "deploy:certificate:prod": "cdk deploy CertifiedDomainStack -c config=prod --profile prod"
+    "deploy:apps": "yarn build lambdas/index.ts && cdk deploy WebAppStack LandingPageStack --profile backstage --require-approval never",
+    "destroy:all": "cdk destroy --all --profile backstage",
+    "deploy:certificate": "cdk deploy CertifiedDomainStack --profile backstage"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.107",
-    "@types/jest": "^29.1.2",
-    "@types/node": "18.11.0",
-    "aws-cdk": "2.46.0",
-    "jest": "^29.2.0",
+    "@types/aws-lambda": "^8.10.109",
+    "@types/git-branch": "^2.0.2",
+    "@types/jest": "^29.2.5",
+    "@types/node": "18.11.18",
+    "aws-cdk": "2.59.0",
+    "jest": "^29.3.1",
     "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "~4.5.5"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.46.0",
-    "constructs": "^10.1.131"
+    "aws-cdk-lib": "2.59.0",
+    "constructs": "^10.1.210",
+    "git-branch": "^2.0.1"
   },
   "packageManager": "yarn@3.1.1"
 }

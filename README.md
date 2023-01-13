@@ -31,7 +31,9 @@ Easiest way is using CLI's [create-account](https://docs.aws.amazon.com/cli/late
 ### 2. Create a policy to allow deployment through CDK
 
 - In console, switch to the new account
-- Create a policy named _DeploymentRights_ and copy over the JSON from other accounts
+- In IAM, create a new policy
+  - Name it _DeploymentRights_
+  - copy over the JSON from other accounts
 
 ### 3. Create a Deployer role
 
@@ -110,6 +112,10 @@ gh secret set STAGING_DEPLOYER_ROLE_ARN
 - Creating and verifying identities in Amazon SES (email)
   - Just follow [this guide](https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html) for now.
 - You need the OrganizationAccountAccessRole to access the environment accounts. See https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html
+
+### Switching accounts
+
+Role: OrganizationAccountAccessRole
 
 ## References
 

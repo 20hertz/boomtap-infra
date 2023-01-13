@@ -66,7 +66,7 @@ export class OIDCProviderStack extends Stack {
     new CfnOutput(this, "CDKDeployerRoleArn", {
       value: cdkDeployerRole.roleArn,
       description:
-        "Copy-paste this ARN next to role-to-assume in the deployment workflow of your CDK stack",
+        "Copy-paste this ARN next to role-to-assume in the GHA deployment workflow of your CDK stack",
     });
 
     const websiteDeployerRole = new Role(this, "WebsiteDeployerRole", {

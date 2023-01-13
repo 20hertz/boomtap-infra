@@ -1,4 +1,4 @@
-import { App, Aws, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+import { App, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
@@ -20,15 +20,15 @@ import { Metric } from "aws-cdk-lib/aws-cloudwatch";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { SSMParameterReader } from "./ssm-param-reader";
 import { HttpsRedirect } from "aws-cdk-lib/aws-route53-patterns";
-
-export interface SpaStackProps extends StackProps {
-  domain: string;
-  httpAuth?: boolean;
-  subdomain?: string;
-}
+import { StackContext } from "../types";
 
 export class SpaStack extends Stack {
-  constructor(parent: App, name: string, props: SpaStackProps) {
+  constructor(
+    parent: App,
+    name: string,
+    props: StackProps,
+    context: StackContext
+  ) {
     super(parent, name, props);
 
     const hostedZoneIdReader = new SSMParameterReader(
@@ -36,7 +36,7 @@ export class SpaStack extends Stack {
       "HostedZoneIdReader",
       {
         parameterName: "Hosted_Zone_ID",
-        region: "us-east-1",
+        region: context.region,
       }
     );
 
@@ -45,7 +45,7 @@ export class SpaStack extends Stack {
       "CertificateArnReader",
       {
         parameterName: "Certificate_ARN",
-        region: "us-east-1",
+        region: context.region,
       }
     );
 
@@ -56,7 +56,8 @@ export class SpaStack extends Stack {
         hostedZoneId: hostedZoneIdReader.getParameterValue(),
         certificateArn: certificateArnReader.getParameterValue(),
         ...props,
-      }
+      },
+      context
     );
 
     new StringParameter(this, "WebsiteBucketSsmParam", {
@@ -73,7 +74,7 @@ export class SpaStack extends Stack {
   }
 }
 
-export interface SpaConstructProps extends SpaStackProps {
+export interface SpaConstructProps extends StackProps {
   certificateArn: string;
   hostedZoneId: string;
 }
@@ -82,12 +83,23 @@ class SpaConstruct extends Construct {
   public readonly sourceBucket: s3.Bucket;
   public readonly distribution: CloudFrontWebDistribution;
 
-  constructor(scope: Stack, name: string, props: SpaConstructProps) {
+  constructor(
+    scope: Stack,
+    name: string,
+    props: SpaConstructProps,
+    context: StackContext
+  ) {
     super(scope, name);
 
-    const env = scope.node.tryGetContext("config");
+    const zoneName = [context.subdomain, context.domainApex]
+      .filter(Boolean)
+      .join(".");
 
-    const siteDomain = [props.subdomain, props.domain]
+    const siteDomain = [
+      context.stack.subdomain,
+      context.subdomain,
+      context.domainApex,
+    ]
       .filter(Boolean)
       .join(".");
 
@@ -122,7 +134,7 @@ class SpaConstruct extends Construct {
         certificateArn: props.certificateArn,
         env: {
           region: "us-east-1",
-          account: Aws.ACCOUNT_ID,
+          account: context.accountNumber,
         },
         node: this.node,
         stack: scope,
@@ -140,12 +152,12 @@ class SpaConstruct extends Construct {
 
     const edgeAuth = new experimental.EdgeFunction(this, "EdgeAuthFn", {
       handler: "index.handler",
-      runtime: lambda.Runtime.NODEJS_14_X,
+      runtime: lambda.Runtime.NODEJS_16_X,
       code: lambda.Code.fromAsset(path.join(__dirname, "..", "lambdas")),
       memorySize: 128,
     });
 
-    const behavior: Behavior = props.httpAuth
+    const behavior: Behavior = context.httpAuth
       ? {
           lambdaFunctionAssociations: [
             {
@@ -179,7 +191,7 @@ class SpaConstruct extends Construct {
       this,
       "HostedZone",
       {
-        zoneName: siteDomain,
+        zoneName,
         hostedZoneId: props.hostedZoneId,
       }
     );
@@ -201,11 +213,11 @@ class SpaConstruct extends Construct {
       distributionPaths: ["/*"],
     });
 
-    if (env === "prod" && !props.subdomain) {
+    if (!context.subdomain && !context.stack.subdomain) {
       new HttpsRedirect(this, "Redirect", {
         zone: hostedZone,
-        recordNames: [`www.${props.domain}`],
-        targetDomain: props.domain,
+        recordNames: [`www.${context.domainApex}`],
+        targetDomain: context.domainApex,
       });
     }
   }
