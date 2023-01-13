@@ -1,4 +1,4 @@
-import { CfnOutput, Stack, StackProps } from "aws-cdk-lib";
+import { Stack, StackProps } from "aws-cdk-lib";
 import {
   CertificateValidation,
   DnsValidatedCertificate,
@@ -6,18 +6,31 @@ import {
 import { PublicHostedZone } from "aws-cdk-lib/aws-route53";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Construct } from "constructs";
-
-interface CertifiedDomainProps extends StackProps {
-  domain: string;
-  subdomain?: string;
-}
+import { StackContext } from "../types";
 
 export class CertifiedDomainStack extends Stack {
-  constructor(scope: Construct, id: string, props: CertifiedDomainProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: StackProps,
+    context: StackContext
+  ) {
     super(scope, id, props);
 
+    const zoneName = [context.subdomain, context.domainApex]
+      .filter(Boolean)
+      .join(".");
+
+    const siteDomain = [
+      context.stack.subdomain,
+      context.subdomain,
+      context.domainApex,
+    ]
+      .filter(Boolean)
+      .join(".");
+
     const hostedZone = new PublicHostedZone(this, "HostedZone", {
-      zoneName: props.domain,
+      zoneName,
     });
 
     new StringParameter(this, "HostedZoneIdSsmParam", {
@@ -28,10 +41,14 @@ export class CertifiedDomainStack extends Stack {
 
     const certificate = new DnsValidatedCertificate(this, "TLSCertificate", {
       hostedZone,
-      domainName: props.domain,
+      domainName: zoneName,
       subjectAlternativeNames:
-        [`${props.subdomain}.${props.domain}`] ?? undefined,
+        context.subdomain || context.stack.subdomain ? [siteDomain] : undefined,
       validation: CertificateValidation.fromDns(hostedZone),
+      // To use a certificate in AWS Certificate Manager to require HTTPS between viewers and CloudFront,
+      // make sure you request (or import) the certificate in the US East region.
+      // https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cnames-and-https-requirements.html#https-requirements-aws-region
+      region: "us-east-1",
     });
 
     new StringParameter(this, "CertificateArnSsmParam", {

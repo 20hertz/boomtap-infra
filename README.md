@@ -31,7 +31,9 @@ Easiest way is using CLI's [create-account](https://docs.aws.amazon.com/cli/late
 ### 2. Create a policy to allow deployment through CDK
 
 - In console, switch to the new account
-- Create a policy named _DeploymentRights_ and copy over the JSON from other accounts
+- In IAM, create a new policy
+  - Name it _DeploymentRights_
+  - copy over the JSON from other accounts
 
 ### 3. Create a Deployer role
 
