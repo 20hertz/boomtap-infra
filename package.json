@@ -10,7 +10,8 @@
     "test": "jest",
     "cdk": "cdk",
     "deploy:staging": "cdk deploy GitHubOpenIDConnect --profile backstage",
-    "deploy:prod": "cdk deploy GitHubOpenIDConnect --profile prod"
+    "deploy:prod": "cdk deploy GitHubOpenIDConnect --profile prod",
+    "deploy:storage": "cdk deploy FileStorageStack --profile backstage"
   },
   "devDependencies": {
     "@types/jest": "^29.5.5",

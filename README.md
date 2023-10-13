@@ -24,6 +24,13 @@ CDKExecutionAccess policy with the new Actions you need and with respect to the 
        --set-as-default
    ```
 
+   then
+
+   ```
+   cdk bootstrap --cloudformation-execution-policies "arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess [--profile backstage]"
+   ```
+
+```
 ## Useful commands
 
 - `npm run build` compile typescript to js
@@ -32,3 +39,4 @@ CDKExecutionAccess policy with the new Actions you need and with respect to the 
 - `cdk deploy` deploy this stack to your default AWS account/region
 - `cdk diff` compare deployed stack with current state
 - `cdk synth` emits the synthesized CloudFormation template
+```
