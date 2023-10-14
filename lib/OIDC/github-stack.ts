@@ -65,13 +65,25 @@ export class GitHubStack extends cdk.Stack {
         githubProvider.openIdConnectProviderArn,
         conditions
       ),
-      managedPolicies: [
-        iam.ManagedPolicy.fromManagedPolicyName(
-          this,
-          "ManagedPolicyName",
-          "CDKExecutionAccess"
-        ),
-      ],
+      // managedPolicies: [
+      //   iam.ManagedPolicy.fromManagedPolicyName(
+      //     this,
+      //     "ManagedPolicyName",
+      //     "CDKExecutionAccess"
+      //   ),
+      // ],
+      inlinePolicies: {
+        CdkDeploymentPolicy: new iam.PolicyDocument({
+          assignSids: true,
+          statements: [
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
+              actions: ["sts:AssumeRole"],
+              resources: [`arn:aws:iam::${this.account}:role/cdk-*`],
+            }),
+          ],
+        }),
+      },
       roleName: props.deployRole,
       description:
         "This role is used via GitHub Actions to deploy with AWS CDK or Terraform on the target AWS account",
