@@ -2,14 +2,14 @@
   "name": "boomtap-infra",
   "version": "0.1.0",
   "bin": {
-    "boomtap-infra": "bin/boomtap-infra.js"
+    "boomtap-infra": "bin/main.js"
   },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:staging": "cdk deploy GitHubOpenIDConnect --profile backstage",
+    "deploy:staging": "cdk deploy GitHubOpenIDConnect --profile backstage -c env=dev",
     "deploy:prod": "cdk deploy GitHubOpenIDConnect --profile prod",
     "deploy:storage": "cdk deploy FileStorageStack --profile backstage"
   },

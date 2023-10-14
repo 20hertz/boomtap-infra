@@ -2,10 +2,13 @@ import * as cdk from "aws-cdk-lib";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as iam from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
+import { getContext } from "../../bin/config";
 
 export class FileStorageStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+  constructor(parent: cdk.App, id: string, props?: cdk.StackProps) {
+    super(parent, id, props);
+
+    const { origins } = getContext(parent);
 
     const user = new iam.User(this, "IamUser", {
       userName: "Webapp",
@@ -23,10 +26,7 @@ export class FileStorageStack extends cdk.Stack {
 
     const corsRule: s3.CorsRule = {
       allowedMethods: [s3.HttpMethods.GET],
-      allowedOrigins: [
-        "https://boomtap-git-develop-20hertz.vercel.app",
-        "http://localhost:3000",
-      ],
+      allowedOrigins: origins,
       allowedHeaders: ["*"],
     };
 

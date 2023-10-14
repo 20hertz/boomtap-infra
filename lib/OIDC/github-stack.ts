@@ -7,8 +7,6 @@ const githubDomain = "token.actions.githubusercontent.com";
 export interface GitHubStackProps extends cdk.StackProps {
   /**
    * Name of the deploy role to assume in GitHub Actions.
-   *
-   * @default - 'exampleGitHubDeployRole'
    */
   readonly deployRole: string;
   /**
@@ -68,7 +66,11 @@ export class GitHubStack extends cdk.Stack {
         conditions
       ),
       managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonS3FullAccess"),
+        iam.ManagedPolicy.fromManagedPolicyName(
+          this,
+          "ManagedPolicyName",
+          "CDKExecutionAccess"
+        ),
       ],
       roleName: props.deployRole,
       description:
