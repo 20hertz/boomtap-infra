@@ -4,10 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        type: choice
-        description: Environment
-        options:
-          - staging
+        required: true
+        # type: choice
+        # description: Environment
+        # options:
+        #   - staging
       stack:
         type: choice
         description: Stack Name
