@@ -3,6 +3,11 @@ name: deploy-staging
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        type: choice
+        description: Environment
+        options:
+          - staging
       stack:
         type: choice
         description: Stack Name
@@ -17,6 +22,8 @@ jobs:
       actions: write
       contents: read
       id-token: write
+    environment:
+      name: ${{ inputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -24,7 +31,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::925901147548:role/GitHubDeployRole
+          role-to-assume: arn:aws:iam::${{vars.APP_ID}}:role/GitHubDeployRole
           aws-region: ca-central-1
 
       - name: Install Node.js
