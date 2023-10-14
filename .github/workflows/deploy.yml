@@ -1,4 +1,4 @@
-name: deploy-staging
+name: Deploy Stack
 
 on:
   workflow_dispatch:
@@ -31,7 +31,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{vars.APP_ID}}:role/GitHubDeployRole
+          role-to-assume: arn:aws:iam::${{vars.ACCOUNT_ID}}:role/GitHubDeployRole
           aws-region: ca-central-1
 
       - name: Install Node.js
@@ -62,7 +62,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: CDK synth
-        run: npx cdk synth ${{ github.event.inputs.stack }} -c env=dev
+        run: npx cdk synth ${{ github.event.inputs.stack }} -c env=${{ inputs.environment }}
 
       - name: CDK deploy
-        run: npx cdk deploy ${{ github.event.inputs.stack }} -c env=dev --require-approval never
+        run: npx cdk deploy ${{ github.event.inputs.stack }} -c env=${{ inputs.environment }} --require-approval never
