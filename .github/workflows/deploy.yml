@@ -7,7 +7,8 @@ on:
         type: choice
         description: Environment
         options:
-          - staging
+          - backstage
+          - production
       stack:
         type: choice
         description: Stack Name
@@ -27,9 +28,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      # - name: Check ARN
-      #   run: echo arn:aws:iam::${{vars.ACCOUNT_ID}}:role/GitHubDeployRole
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4

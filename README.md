@@ -23,9 +23,11 @@ There are a few steps to get there:
 
    Recommended: save the account id in a variable as you'll need it in the steps below.
 
-2. **Define a profile that can assume the OrganizationAccountAccessRole IAM role in ~/.aws/config**
+2. **Define a profile that can assume the OrganizationAccountAccessRole**
 
    ```
+   # ~/.aws/config
+
    [profile <NAME_OF_PROFILE>]
    role_arn = arn:aws:iam::<ACCOUNT_ID>:role/OrganizationAccountAccessRole
    source_profile = default (or any profile whose credentials have the OrganizationAccountAccessRole)
@@ -38,12 +40,16 @@ There are a few steps to get there:
    aws iam create-policy \
    --policy-name CDKExecutionAccess \
    --policy-document file://cdkExecutionPolicy.json
+   [--profile <PROFILE_NAME>]
    ```
 
    then
 
    ```
-   cdk bootstrap --cloudformation-execution-policies "arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess [--profile backstage]"
+   cdk bootstrap /
+      -c env=<ENVIRONMENT_NAME> /
+      --cloudformation-execution-policies "arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess /
+      [--profile <PROFILE_NAME>]"
    ```
 
 ### Updating the CDK execution policy

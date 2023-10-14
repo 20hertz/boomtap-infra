@@ -9,8 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:staging": "cdk deploy GitHubOpenIDConnect --profile backstage -c env=dev",
-    "deploy:prod": "cdk deploy GitHubOpenIDConnect --profile prod",
+    "deploy:staging": "cdk deploy GitHubOpenIDConnect --profile backstage -c env=backstage",
     "deploy:storage": "cdk deploy FileStorageStack --profile backstage"
   },
   "devDependencies": {
