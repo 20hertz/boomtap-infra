@@ -1,10 +1,52 @@
 # Boomtap Infra
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Prerequisites
+
+You need:
+
+- Node.js
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [AWS CDK Toolkit](https://docs.aws.amazon.com/cdk/v2/guide/cli.html)
+- Proper AWS credentials
 
 ## Get a new environment up and running
 
-### CDK Execution access
+There are a few steps to get there:
+
+1. **Create an AWS account that is member of the organization**
+
+   Easiest way is using CLI's [create-account](https://docs.aws.amazon.com/cli/latest/reference/organizations/create-account.html) command
+
+   ```
+   % aws organizations create-account --email <value> --account-name <ENVIRONMENT_NAME>
+   ```
+
+   Recommended: save the account id in a variable as you'll need it in the steps below.
+
+2. **Define a profile that can assume the OrganizationAccountAccessRole IAM role in ~/.aws/config**
+
+   ```
+   [profile <NAME_OF_PROFILE>]
+   role_arn = arn:aws:iam::<ACCOUNT_ID>:role/OrganizationAccountAccessRole
+   source_profile = default (or any profile whose credentials have the OrganizationAccountAccessRole)
+   region = <REGION>
+   ```
+
+3. **Create a policy that allows CDK to deploy resources on this account**
+
+   ```
+   aws iam create-policy \
+   --policy-name CDKExecutionAccess \
+   --policy-document file://cdkExecutionPolicy.json
+   ```
+
+   then
+
+   ```
+   cdk bootstrap --cloudformation-execution-policies "arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess [--profile backstage]"
+   ```
+
+### Updating the CDK execution policy
 
 You might need to expand the permission that CDK currently has to deploy resources. To do so, update the
 CDKExecutionAccess policy with the new Actions you need and with respect to the least privilege principle.
@@ -24,19 +66,36 @@ CDKExecutionAccess policy with the new Actions you need and with respect to the 
        --set-as-default
    ```
 
-   then
+   then again
 
    ```
-   cdk bootstrap --cloudformation-execution-policies "arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess [--profile backstage]"
+   cdk bootstrap \
+        --cloudformation-execution-policies "arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess [--profile backstage]"
    ```
 
-```
-## Useful commands
+   There is a limit to 5 Policy versions, so we need to delete old versions to make updates. But it’s not difficult. We simply list existing versions:
 
-- `npm run build` compile typescript to js
-- `npm run watch` watch for changes and compile
-- `npm run test` perform the jest unit tests
-- `cdk deploy` deploy this stack to your default AWS account/region
-- `cdk diff` compare deployed stack with current state
-- `cdk synth` emits the synthesized CloudFormation template
-```
+   ```
+   aws iam list-policy-versions \
+        --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess
+   ```
+
+   And then delete the selected old version:
+
+   ```
+   aws iam delete-policy-version \
+       --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess \
+       --version-id <VERSION>
+   ```
+
+## Other useful commands
+
+- `pnpm build` --> compile typescript to js
+- `pnpm watch` --> watch for changes and compile
+- `pnpm test` --> perform the jest unit tests
+- `cdk diff` --> compare deployed stack with current state
+- `cdk synth` --> emits the synthesized CloudFormation template
+
+## Misc
+
+The `cdk.json` file tells the CDK Toolkit how to execute your app.
