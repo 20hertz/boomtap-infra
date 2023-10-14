@@ -54,7 +54,7 @@
     "@aws-cdk/aws-rds:auroraClusterChangeScopeOfInstanceParameterGroupWithEachParameters": true,
     "@aws-cdk/aws-appsync:useArnForSourceApiAssociationIdentifier": true,
     "@aws-cdk/aws-rds:preventRenderingDeprecatedCredentials": true,
-    "dev": {
+    "staging": {
       "origins": [
         "https://boomtap-git-develop-20hertz.vercel.app",
         "http://localhost:3000"

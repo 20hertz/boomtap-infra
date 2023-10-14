@@ -4,11 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        required: true
-        # type: choice
-        # description: Environment
-        # options:
-        #   - staging
+        type: choice
+        description: Environment
+        options:
+          - staging
       stack:
         type: choice
         description: Stack Name
@@ -29,44 +28,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Check ARN
-        run: echo arn:aws:iam::${{vars.APP_ID}}:role/GitHubDeployRole
+      # - name: Check ARN
+      #   run: echo arn:aws:iam::${{vars.ACCOUNT_ID}}:role/GitHubDeployRole
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: arn:aws:iam::${{vars.APP_ID}}:role/GitHubDeployRole
-      #     aws-region: ca-central-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{vars.ACCOUNT_ID}}:role/GitHubDeployRole
+          aws-region: ca-central-1
 
-      # - name: Install Node.js
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 18
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-      # - uses: pnpm/action-setup@v2
-      #   name: Install pnpm
-      #   with:
-      #     version: 8
-      #     run_install: false
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
 
-      # - name: Get pnpm store directory
-      #   shell: bash
-      #   run: |
-      #     echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      # - uses: actions/cache@v3
-      #   name: Setup pnpm cache
-      #   with:
-      #     path: ${{ env.STORE_PATH }}
-      #     key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pnpm-store-
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
-      # - name: Install dependencies
-      #   run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      # - name: CDK synth
-      #   run: npx cdk synth ${{ github.event.inputs.stack }} -c env=dev
+      - name: CDK synth
+        run: npx cdk synth ${{ github.event.inputs.stack }} -c env=${{ inputs.environment }}
 
-      # - name: CDK deploy
-      #   run: npx cdk deploy ${{ github.event.inputs.stack }} -c env=dev --require-approval never
+      - name: CDK deploy
+        run: npx cdk deploy ${{ github.event.inputs.stack }} -c env=${{ inputs.environment }} --require-approval never
