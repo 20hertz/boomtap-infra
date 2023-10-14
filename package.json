@@ -10,7 +10,6 @@
     "test": "jest",
     "cdk": "cdk",
     "deploy:staging": "cdk deploy GitHubOpenIDConnect --profile backstage -c env=backstage",
-    "deploy:prod": "cdk deploy GitHubOpenIDConnect --profile prod -c env=production",
     "deploy:storage": "cdk deploy FileStorageStack --profile backstage"
   },
   "devDependencies": {
