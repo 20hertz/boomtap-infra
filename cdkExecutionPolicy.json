@@ -1,0 +1,31 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["lambda:*", "s3:*", "ssm:*"],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "ca-central-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:*Policy",
+        "iam:*PolicyVersion*",
+        "iam:*Role*",
+        "iam:CreateUser",
+        "iam:GetUser",
+        "iam:DeleteUser",
+        "iam:ListAccessKeys"
+      ],
+      "NotResource": [
+        "arn:aws:iam::*:role/cdk-*",
+        "arn:aws:iam::*:policy/CDKExecutionAccess"
+      ]
+    }
+  ]
+}
