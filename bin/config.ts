@@ -29,10 +29,10 @@ export const getContext = (app: cdk.App): Config => {
   return {
     environment: env,
     origins: unparsedEnv["origins"],
-    // region: ensureString(unparsedEnv, "region"),
   };
 };
 
+/** @example ensureString(unparsedEnv, "property_name") */
 function ensureString(object: Record<string, any>, key: keyof Config): string {
   if (
     !object[key] ||
