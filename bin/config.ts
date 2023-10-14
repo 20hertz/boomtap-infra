@@ -1,5 +1,5 @@
 import * as cdk from "aws-cdk-lib";
-const supportedEnvironments = ["staging"] as const;
+const supportedEnvironments = ["backstage", "production"] as const;
 
 type SupportedEnvironments = (typeof supportedEnvironments)[number];
 
