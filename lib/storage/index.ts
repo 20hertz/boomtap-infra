@@ -19,15 +19,15 @@ export class FileStorageStack extends cdk.Stack {
     );
 
     const bucket = new s3.Bucket(this, "SoundKitSourceFilesBucket", {
-      bucketName: "sound-kit-sources",
-      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      bucketName: `sound-kit-sources-${cdk.Aws.STACK_ID}`,
+      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
     });
 
     const corsRule: s3.CorsRule = {
+      allowedHeaders: ["*"],
       allowedMethods: [s3.HttpMethods.GET],
       allowedOrigins: origins,
-      allowedHeaders: ["*"],
     };
 
     bucket.grantPut(new iam.ArnPrincipal(user.userArn));
