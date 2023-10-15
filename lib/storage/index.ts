@@ -1,7 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as iam from "aws-cdk-lib/aws-iam";
-import { Construct } from "constructs";
 import { getContext } from "../../bin/config";
 
 export class FileStorageStack extends cdk.Stack {
@@ -20,7 +19,6 @@ export class FileStorageStack extends cdk.Stack {
 
     const bucket = new s3.Bucket(this, "SoundKitSourceFilesBucket", {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      bucketName: `sound-kit-sources-${cdk.Aws.STACK_ID}`,
       objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
     });
 
