@@ -1,7 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as iam from "aws-cdk-lib/aws-iam";
-import { Construct } from "constructs";
 import { getContext } from "../../bin/config";
 
 export class FileStorageStack extends cdk.Stack {
@@ -19,15 +18,14 @@ export class FileStorageStack extends cdk.Stack {
     );
 
     const bucket = new s3.Bucket(this, "SoundKitSourceFilesBucket", {
-      bucketName: "sound-kit-sources",
-      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
     });
 
     const corsRule: s3.CorsRule = {
+      allowedHeaders: ["*"],
       allowedMethods: [s3.HttpMethods.GET],
       allowedOrigins: origins,
-      allowedHeaders: ["*"],
     };
 
     bucket.grantPut(new iam.ArnPrincipal(user.userArn));
