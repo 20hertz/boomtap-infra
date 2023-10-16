@@ -17,9 +17,12 @@
         "iam:*Policy",
         "iam:*PolicyVersion*",
         "iam:*Role*",
+        "iam:CreateOpenIDConnectProvider",
         "iam:CreateUser",
-        "iam:GetUser",
+        "iam:DeleteOpenIDConnectProvider",
         "iam:DeleteUser",
+        "iam:GetOpenIDConnectProvider",
+        "iam:GetUser",
         "iam:ListAccessKeys"
       ],
       "NotResource": [
