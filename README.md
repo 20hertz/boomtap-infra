@@ -43,13 +43,12 @@ There are a few steps to get there:
    [--profile <PROFILE_NAME>]
    ```
 
-   then
-
+4. **Bootstrap the CDK for the new account**
    ```
    cdk bootstrap /
       -c env=<ENVIRONMENT_NAME> /
-      --cloudformation-execution-policies "arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess /
-      [--profile <PROFILE_NAME>]"
+      --cloudformation-execution-policies "arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess" /
+      [--profile <PROFILE_NAME>]
    ```
 
 ### Updating the CDK execution policy
@@ -58,41 +57,23 @@ You might need to expand the permission that CDK currently has to deploy resourc
 CDKExecutionAccess policy with the new Actions you need and with respect to the least privilege principle.
 
 1. Update cdkExecutionPolicy.json
-2. Run
+2. Run `pnpm policy:update`
+3. You probably don't need to run the bootstrap script again. But try it if deployment doesn't work.
 
-   ```
-   ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text --profile backstage)
-   ```
+There is a limit to 5 Policy versions, so we need to delete old versions to make updates. But it’s not difficult. We simply list existing versions:
 
-   ```
-   aws iam create-policy-version \
-       --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess \
-       --policy-document file://cdkExecutionPolicy.json \
-       --profile backstage \
-       --set-as-default
-   ```
+```
+aws iam list-policy-versions \
+      --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess
+```
 
-   then again
+And then delete the selected old version:
 
-   ```
-   cdk bootstrap \
-        --cloudformation-execution-policies "arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess [--profile backstage]"
-   ```
-
-   There is a limit to 5 Policy versions, so we need to delete old versions to make updates. But it’s not difficult. We simply list existing versions:
-
-   ```
-   aws iam list-policy-versions \
-        --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess
-   ```
-
-   And then delete the selected old version:
-
-   ```
-   aws iam delete-policy-version \
-       --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess \
-       --version-id <VERSION>
-   ```
+```
+aws iam delete-policy-version \
+      --policy-arn arn:aws:iam::$ACCOUNT_ID:policy/CDKExecutionAccess \
+      --version-id <VERSION>
+```
 
 ## Other useful commands
 

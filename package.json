@@ -9,8 +9,9 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy:staging": "cdk deploy GitHubOpenIDConnect --profile backstage -c env=backstage",
-    "deploy:storage": "cdk deploy FileStorageStack --profile backstage"
+    "deploy:oidc": "cdk deploy GitHubOpenIDConnect --profile backstage -c env=backstage",
+    "deploy:storage": "cdk deploy FileStorageStack --profile backstage -c env=backstage",
+    "policy:update": "./scripts.sh update_cdk_policy"
   },
   "devDependencies": {
     "@types/jest": "^29.5.5",
