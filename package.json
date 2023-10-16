@@ -11,6 +11,7 @@
     "cdk": "cdk",
     "deploy:oidc": "cdk deploy GitHubOpenIDConnect --profile backstage -c env=backstage",
     "deploy:storage": "cdk deploy FileStorageStack --profile backstage -c env=backstage",
+    "policy:create": "./scripts.sh create_cdk_policy",
     "policy:update": "./scripts.sh update_cdk_policy"
   },
   "devDependencies": {

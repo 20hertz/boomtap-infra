@@ -36,12 +36,7 @@ There are a few steps to get there:
 
 3. **Create a policy that allows CDK to deploy resources on this account**
 
-   ```
-   aws iam create-policy \
-   --policy-name CDKExecutionAccess \
-   --policy-document file://cdkExecutionPolicy.json
-   [--profile <PROFILE_NAME>]
-   ```
+   `pnpm policy:create <backstage|prod>`
 
 4. **Bootstrap the CDK for the new account**
    ```
@@ -57,7 +52,7 @@ You might need to expand the permission that CDK currently has to deploy resourc
 CDKExecutionAccess policy with the new Actions you need and with respect to the least privilege principle.
 
 1. Update cdkExecutionPolicy.json
-2. Run `pnpm policy:update`
+2. Run `pnpm policy:update <backstage | prod>`
 3. You probably don't need to run the bootstrap script again. But try it if deployment doesn't work.
 
 There is a limit to 5 Policy versions, so we need to delete old versions to make updates. But it’s not difficult. We simply list existing versions:
