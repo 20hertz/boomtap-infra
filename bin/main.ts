@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
-import { GitHubStack } from "../lib/OIDC/github-stack";
+import { GitHubStack } from "../lib/trust/github-oidc-stack";
 import { FileStorageStack } from "../lib/storage";
 import { getContext } from "./config";
 
